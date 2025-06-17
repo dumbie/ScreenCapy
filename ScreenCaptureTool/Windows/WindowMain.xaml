@@ -8,11 +8,9 @@
         mc:Ignorable="d"
         Background="{DynamicResource ApplicationWhiteBrush}"
         Title="Screen Capture Tool"
-        ShowInTaskbar="False"
         MinHeight="650"
         Height="650"
         MinWidth="700"
-        MaxWidth="700"
         Width="700">
 
     <Grid>
@@ -35,6 +33,18 @@
                 <StackPanel Name="menuButtonRecording" Style="{StaticResource ListBoxMenuStackPanel}" ToolTipService.ToolTip="Show recording settings">
                     <Image Source="/Assets/Video.png" Width="55" HorizontalAlignment="Center"/>
                     <TextBlock Text="Recording" Style="{StaticResource TextBlockWhite}" HorizontalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Name="menuButtonUpdate" Style="{StaticResource ListBoxMenuStackPanel}" ToolTipService.ToolTip="Check for application update">
+                    <Image Source="/Assets/Update.png" Width="55" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Update" Style="{StaticResource TextBlockWhite}" HorizontalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Name="menuButtonClose" Style="{StaticResource ListBoxMenuStackPanel}" ToolTipService.ToolTip="Close the window">
+                    <Image Source="/Assets/Close.png" Width="55" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Close" Style="{StaticResource TextBlockWhite}" HorizontalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Name="menuButtonExit" Style="{StaticResource ListBoxMenuStackPanel}" ToolTipService.ToolTip="Exit application">
+                    <Image Source="/Assets/Shutdown.png" Width="55" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Exit" Style="{StaticResource TextBlockWhite}" HorizontalAlignment="Center"/>
                 </StackPanel>
             </ListBox>
         </Grid>

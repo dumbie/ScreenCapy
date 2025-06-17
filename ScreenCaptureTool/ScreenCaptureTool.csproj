@@ -29,6 +29,7 @@
 		<EmbeddedResource Include="Assets\AppIconRecording.ico" />
 	</ItemGroup>
 	<ItemGroup>
+		<Resource Include="Assets\Close.png" />
 		<Resource Include="Assets\Failed.png" />
 		<EmbeddedResource Include="Assets\AppIconProcessing.ico" />
 		<Content Include="Assets\Capture\CaptureScreenshot.mp3">
@@ -53,6 +54,8 @@
 		<ProjectReference Include="..\ScreenCaptureImport\ScreenCaptureImport.csproj" />
 		<Resource Include="Assets\Screenshot.png" />
 		<Resource Include="Assets\Settings.png" />
+		<Resource Include="Assets\Shutdown.png" />
+		<Resource Include="Assets\Update.png" />
 		<Resource Include="Assets\Video.png" />
 	</ItemGroup>
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Windows;
 using static ArnoldVinkCode.AVSettings;
 using static ScreenCapture.AppVariables;
@@ -20,9 +19,6 @@ namespace ScreenCapture
                 //Update first launch setting
                 SettingSave(vConfigurationScreenCaptureTool, "AppFirstLaunch", "False");
 
-                //Make sure the correct window style is set
-                StateChanged += CheckWindowStateAndStyle;
-
                 //Main menu functions
                 lb_Menu.PreviewKeyUp += lb_Menu_KeyPressUp;
                 lb_Menu.PreviewMouseUp += lb_Menu_MousePressUp;
@@ -31,65 +27,12 @@ namespace ScreenCapture
         }
 
         //Window Close Handler
-        protected async override void OnClosing(CancelEventArgs e)
+        protected override void OnClosing(CancelEventArgs e)
         {
             try
             {
                 e.Cancel = true;
-                await AppExit.Exit_Prompt();
-            }
-            catch { }
-        }
-
-        //Make sure the correct window style is set
-        void CheckWindowStateAndStyle(object sender, EventArgs e)
-        {
-            try
-            {
-                if (WindowState == WindowState.Minimized) { Application_ShowHideWindow(); }
-            }
-            catch { }
-        }
-
-        //Show or hide the application window
-        public void Application_ShowHideWindow()
-        {
-            try
-            {
-                if (ShowInTaskbar)
-                {
-                    Application_HideWindow();
-                }
-                else
-                {
-                    Application_ShowWindow();
-                }
-            }
-            catch { }
-        }
-
-        //Show the application window
-        public void Application_ShowWindow()
-        {
-            try
-            {
-                Debug.WriteLine("Show application from tray.");
-                ShowInTaskbar = true;
-                Visibility = Visibility.Visible;
-                WindowState = WindowState.Normal;
-            }
-            catch { }
-        }
-
-        //Hide the application window
-        public void Application_HideWindow()
-        {
-            try
-            {
-                Debug.WriteLine("Minimizing application to tray.");
-                ShowInTaskbar = false;
-                Visibility = Visibility.Collapsed;
-                WindowState = WindowState.Normal;
+                this.Hide();
             }
             catch { }
         }

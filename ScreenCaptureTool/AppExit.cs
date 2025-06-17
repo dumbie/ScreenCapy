@@ -15,11 +15,11 @@ namespace ScreenCapture
             try
             {
                 List<string> messageAnswers = new List<string>();
-                messageAnswers.Add("Close application");
+                messageAnswers.Add("Exit application");
                 messageAnswers.Add("Cancel");
 
-                string messageResult = await new AVMessageBox().Popup(null, "Do you really want to close Screen Capture Tool?", "You will no longer be able to take screenshots using the set shortcuts.", messageAnswers);
-                if (messageResult == "Close application")
+                string messageResult = await new AVMessageBox().Popup(null, "Do you really want to exit Screen Capture Tool?", "You will no longer be able to take screenshots using the set shortcuts.", messageAnswers);
+                if (messageResult == "Exit application")
                 {
                     await Exit();
                 }

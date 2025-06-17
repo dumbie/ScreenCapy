@@ -167,7 +167,7 @@ namespace ScreenCapture
                     if (SettingLoad(vConfigurationScreenCaptureTool, "AppFirstLaunch", typeof(bool)))
                     {
                         Debug.WriteLine("First launch showing the window.");
-                        vWindowMain.Application_ShowWindow();
+                        vWindowMain.Show();
                     }
 
                     //Start keyboard hotkeys

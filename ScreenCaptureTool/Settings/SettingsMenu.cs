@@ -1,14 +1,16 @@
 ﻿using ArnoldVinkCode;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using static ArnoldVinkCode.AVUpdate;
 
 namespace ScreenCapture
 {
     partial class WindowMain
     {
         //Handle main menu mouse/touch tapped
-        void lb_Menu_MousePressUp(object sender, MouseButtonEventArgs e)
+        async void lb_Menu_MousePressUp(object sender, MouseButtonEventArgs e)
         {
             try
             {
@@ -16,23 +18,23 @@ namespace ScreenCapture
                 if (!AVFunctions.ListBoxItemClickCheck((DependencyObject)e.OriginalSource)) { return; }
 
                 //Check which mouse button is pressed
-                lb_Menu_SingleTap();
+                await lb_Menu_SingleTap();
             }
             catch { }
         }
 
         //Handle main menu keyboard/controller tapped
-        void lb_Menu_KeyPressUp(object sender, KeyEventArgs e)
+        async void lb_Menu_KeyPressUp(object sender, KeyEventArgs e)
         {
             try
             {
-                if (e.Key == Key.Space) { lb_Menu_SingleTap(); }
+                if (e.Key == Key.Space) { await lb_Menu_SingleTap(); }
             }
             catch { }
         }
 
         //Handle main menu single tap
-        void lb_Menu_SingleTap()
+        async Task lb_Menu_SingleTap()
         {
             try
             {
@@ -42,6 +44,13 @@ namespace ScreenCapture
                     if (SelStackPanel.Name == "menuButtonGeneral") { ShowGridPage(grid_General); }
                     else if (SelStackPanel.Name == "menuButtonScreenshot") { ShowGridPage(grid_Screenshot); }
                     else if (SelStackPanel.Name == "menuButtonRecording") { ShowGridPage(grid_Recording); }
+                    else if (SelStackPanel.Name == "menuButtonUpdate")
+                    {
+                        //Check for available application update
+                        await UpdateCheck("dumbie", "ScreenCaptureTool", false);
+                    }
+                    else if (SelStackPanel.Name == "menuButtonClose") { this.Close(); }
+                    else if (SelStackPanel.Name == "menuButtonExit") { await AppExit.Exit_Prompt(); }
                 }
             }
             catch { }

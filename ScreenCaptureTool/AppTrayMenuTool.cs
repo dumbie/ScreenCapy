@@ -63,7 +63,7 @@ namespace ScreenCapture
         {
             try
             {
-                vWindowMain.Application_ShowHideWindow();
+                vWindowMain.Show();
             }
             catch { }
         }
@@ -99,7 +99,7 @@ namespace ScreenCapture
         {
             try
             {
-                vWindowMain.Application_ShowHideWindow();
+                vWindowMain.Show();
             }
             catch { }
         }
