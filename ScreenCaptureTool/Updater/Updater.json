@@ -2,7 +2,7 @@
   "UserName": "Dumbie",
   "RepoName": "ScreenCaptureTool",
   "FileName": "ScreenCaptureTool.zip",
-  "ExtractName": "ScreenCaptureTool",
+  "ExtractPathRemove": [ "ScreenCaptureTool" ],
   "ProcessLaunch": [
     "Launcher.exe"
   ],
