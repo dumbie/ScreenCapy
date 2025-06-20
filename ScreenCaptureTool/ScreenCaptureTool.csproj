@@ -50,6 +50,9 @@
 		<Content Include="Profiles\User\CaptureShortcutKeyboard.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
+		<Content Include="Updater\Updater.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
 		<ProjectReference Include="..\..\ArnoldVinkCode\Desktop\ArnoldVinkCode.csproj" />
 		<ProjectReference Include="..\ScreenCaptureImport\ScreenCaptureImport.csproj" />
 		<Resource Include="Assets\Screenshot.png" />
