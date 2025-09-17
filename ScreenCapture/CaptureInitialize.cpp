@@ -129,12 +129,12 @@ namespace
 				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"SetMaximumFrameLatency failed") };
 			}
 
-			//Set gpu thread scheduler priority
-			hResult = vDirectXInstance.iDxgiDevice4->SetGPUThreadPriority(0);
-			if (FAILED(hResult))
-			{
-				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"SetGPUThreadPriority failed") };
-			}
+			////Set gpu thread scheduler priority
+			//hResult = vDirectXInstance.iDxgiDevice4->SetGPUThreadPriority(0);
+			//if (FAILED(hResult))
+			//{
+			//	return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"SetGPUThreadPriority failed") };
+			//}
 
 			//Set multithread protection
 			hResult = vDirectXInstance.iD3D11Multithread0->SetMultithreadProtected(true);
@@ -265,17 +265,35 @@ namespace
 			vWgcInstance.vGraphicsCaptureSession = vWgcInstance.vGraphicsCaptureFramePool.CreateCaptureSession(vWgcInstance.vGraphicsCaptureItem);
 
 			//Hide or show mouse cursor
-			vWgcInstance.vGraphicsCaptureSession.IsCursorCaptureEnabled(vCaptureSettings.DrawMouseCursor);
-
 			try
 			{
-				//Hide or show capture border
+				vWgcInstance.vGraphicsCaptureSession.IsCursorCaptureEnabled(vCaptureSettings.DrawMouseCursor);
+			}
+			catch (...)
+			{
+				AVDebugWriteLine("Failed to show or hide mouse cursor, not supported?");
+			}
+
+			//Hide or show capture border
+			try
+			{
 				winrt::Windows::Graphics::Capture::GraphicsCaptureAccess::RequestAccessAsync(winrt::Windows::Graphics::Capture::GraphicsCaptureAccessKind::Borderless);
 				vWgcInstance.vGraphicsCaptureSession.IsBorderRequired(vCaptureSettings.DrawBorder);
 			}
 			catch (...)
 			{
 				AVDebugWriteLine("Failed to show or hide capture border, not supported?");
+			}
+
+			//Set minimum update interval to remove fps limit
+			try
+			{
+				auto minimumInterval = winrt::Windows::Foundation::TimeSpan{ 0 };
+				vWgcInstance.vGraphicsCaptureSession.MinUpdateInterval(minimumInterval);
+			}
+			catch (...)
+			{
+				AVDebugWriteLine("Failed set minimum update interval, not supported?");
 			}
 
 			//Start capture session
