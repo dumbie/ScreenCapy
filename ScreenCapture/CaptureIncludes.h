@@ -1,4 +1,5 @@
 #pragma once
+#pragma comment(lib, "windowsapp.lib")
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "windowscodecs.lib")
