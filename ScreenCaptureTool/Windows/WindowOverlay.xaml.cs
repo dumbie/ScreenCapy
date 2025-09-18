@@ -1,8 +1,9 @@
 ﻿using ArnoldVinkCode;
+using ArnoldVinkStyles;
 using System;
 using System.Windows;
 using System.Windows.Interop;
-using System.Windows.Threading;
+using static ArnoldVinkCode.AVActions;
 using static ArnoldVinkCode.AVInteropDll;
 using static ArnoldVinkCode.AVSettings;
 using static ArnoldVinkCode.AVWindowFunctions;
@@ -15,7 +16,7 @@ namespace ScreenCapture
     {
         //Window Variables
         private IntPtr vInteropWindowHandle = IntPtr.Zero;
-        private DispatcherTimer vDispatcherTimerDelay = new DispatcherTimer();
+        private AVHighResTimer vTimerDelay = new AVHighResTimer();
         private CaptureTypes vCaptureType = CaptureTypes.None;
         private string vCaptureMessage = string.Empty;
         private int vRecordingTime = 0;
@@ -76,10 +77,9 @@ namespace ScreenCapture
 
                     //Start timing update timer
                     vRecordingTime = 0;
-                    AVFunctions.TimerRenew(ref vDispatcherTimerDelay);
-                    vDispatcherTimerDelay.Interval = TimeSpan.FromMilliseconds(1000);
-                    vDispatcherTimerDelay.Tick += VDispatcherTimerDelay_Tick;
-                    vDispatcherTimerDelay.Start();
+                    vTimerDelay.Interval = 1000;
+                    vTimerDelay.TickSet = TimerDelay_Tick;
+                    vTimerDelay.Start();
                 }
                 else if (vCaptureType == CaptureTypes.Image)
                 {
@@ -155,12 +155,15 @@ namespace ScreenCapture
         }
 
         //Update recording time
-        private void VDispatcherTimerDelay_Tick(object sender, EventArgs e)
+        private void TimerDelay_Tick(object sender, EventArgs e)
         {
             try
             {
                 vRecordingTime++;
-                textblock_Timing.Text = AVFunctions.SecondsToHms(vRecordingTime, true, false);
+                AVDispatcherInvoke.DispatcherInvoke(delegate
+                {
+                    textblock_Timing.Text = AVFunctions.SecondsToHms(vRecordingTime, true, false);
+                });
             }
             catch { }
         }

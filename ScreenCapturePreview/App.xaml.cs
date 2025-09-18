@@ -11,7 +11,7 @@ namespace ScreenCapture
             try
             {
                 //Setup application defaults
-                SetupDefaults(ProcessPriority.Normal, false);
+                SetupDefaults(ProcessPriorityClasses.NORMAL_PRIORITY_CLASS, false);
             }
             catch { }
         }

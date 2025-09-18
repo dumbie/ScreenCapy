@@ -1,4 +1,5 @@
 ﻿using ArnoldVinkCode;
+using ArnoldVinkStyles;
 using ScreenCaptureImport;
 using System;
 using System.ComponentModel;
@@ -42,7 +43,7 @@ namespace ScreenCapture
         {
             try
             {
-                AVActions.DispatcherInvoke(delegate
+                AVDispatcherInvoke.DispatcherInvoke(delegate
                 {
                     //Register capture events
                     CaptureEventDeviceChangeDetected = new CaptureEvent(CaptureEventDeviceChangeDetectedVoid);
@@ -143,7 +144,7 @@ namespace ScreenCapture
 
                         //Update screen capture preview
                         int currentTickcount = Environment.TickCount;
-                        AVActions.DispatcherInvoke(delegate
+                        AVDispatcherInvoke.DispatcherInvoke(delegate
                         {
                             textblock_FrameCount.Text = currentTickcount.ToString() + " (" + (currentTickcount - previousTickcount) + "ms)";
                             image_DebugPreview.Source = CaptureBitmap.BitmapIntPtrToBitmapSource(bitmapIntPtr, vCaptureDetails);

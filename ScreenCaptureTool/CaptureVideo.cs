@@ -1,4 +1,5 @@
 ﻿using ArnoldVinkCode;
+using ArnoldVinkStyles;
 using ScreenCaptureImport;
 using System;
 using System.Diagnostics;
@@ -56,7 +57,7 @@ namespace ScreenCapture
                     //Update the tray notify icon
                     AppTrayMenuCapture.TrayNotifyIcon.Text = AVFunctions.StringCut("Processing " + vCaptureFileName, 59, "...");
                     AppTrayMenuCapture.TrayNotifyIcon.Icon = new Icon(AVEmbedded.EmbeddedResourceToStream(null, "ScreenCaptureTool.Assets.AppIconProcessing.ico"));
-                    AVActions.DispatcherInvoke(delegate
+                    AVDispatcherInvoke.DispatcherInvoke(delegate
                     {
                         vWindowOverlay.ellipse_Status.Fill = (SolidColorBrush)Application.Current.Resources["ApplicationIgnoredBrush"];
                     });

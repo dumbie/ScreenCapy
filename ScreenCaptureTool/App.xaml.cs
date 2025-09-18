@@ -11,7 +11,7 @@ namespace ScreenCapture
             try
             {
                 //Setup application defaults
-                SetupDefaults(ProcessPriority.High, false);
+                SetupDefaults(ProcessPriorityClasses.HIGH_PRIORITY_CLASS, false);
 
                 //Run application startup code
                 await AppStartup.Startup(e.Args);

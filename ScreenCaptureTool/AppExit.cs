@@ -1,4 +1,5 @@
 ﻿using ArnoldVinkCode;
+using ArnoldVinkStyles;
 using ScreenCaptureImport;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace ScreenCapture
                 messageAnswers.Add("Exit application");
                 messageAnswers.Add("Cancel");
 
-                string messageResult = await new AVMessageBox().Popup(null, "Do you really want to exit Screen Capture Tool?", "You will no longer be able to take screenshots using the set shortcuts.", messageAnswers);
+                string messageResult = AVMessageBox.Popup(null, "Do you really want to exit Screen Capture Tool?", "You will no longer be able to take screenshots using the set shortcuts.", messageAnswers);
                 if (messageResult == "Exit application")
                 {
                     await Exit();
@@ -64,7 +65,7 @@ namespace ScreenCapture
                 await AVInputOutputHotkeyHook.Stop();
 
                 //Hide the visible tray icons
-                AVActions.DispatcherInvoke(delegate
+                AVDispatcherInvoke.DispatcherInvoke(delegate
                 {
                     AppTrayMenuTool.TrayNotifyIcon.Visible = false;
                     AppTrayMenuCapture.TrayNotifyIcon.Visible = false;
