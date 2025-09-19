@@ -47,17 +47,9 @@ namespace
 	{
 		try
 		{
-			//Get media frame duration time
-			ULONGLONG mediaTimeDuration;
-			MFFrameRateToAverageTimePerFrame(vMediaSettings.VideoFrameRate, 1, &mediaTimeDuration);
-
-			//Set thread characteristics
-			DWORD taskIndex = 1;
-			HANDLE mmThread = AvSetMmThreadCharacteristicsW(L"Pro Audio", &taskIndex);
-			if (mmThread)
-			{
-				AvSetMmThreadPriority(mmThread, AVRT_PRIORITY_CRITICAL);
-			}
+			//Calculate media duration time
+			ULONGLONG mediaTimeDuration = vReferenceTimeToSeconds / vMediaSettings.VideoFrameRate;
+			AVDebugWriteLine("Video frame duration: " << mediaTimeDuration);
 
 			//Write media in loop while allowed
 			while (vMediaFoundationInstance.vMediaWriteLoopAllowed)
@@ -100,17 +92,9 @@ namespace
 	{
 		try
 		{
-			//Get media frame duration time
-			ULONGLONG mediaTimeDuration;
-			MFFrameRateToAverageTimePerFrame(vMediaSettings.VideoFrameRate, 1, &mediaTimeDuration);
-
-			//Set thread characteristics
-			DWORD taskIndex = 0;
-			HANDLE mmThread = AvSetMmThreadCharacteristicsW(L"Pro Audio", &taskIndex);
-			if (mmThread)
-			{
-				AvSetMmThreadPriority(mmThread, AVRT_PRIORITY_CRITICAL);
-			}
+			//Calculate media duration time
+			ULONGLONG mediaTimeDuration = vMediaSettings.AudioSampleRate / 100;
+			AVDebugWriteLine("Audio frame duration: " << mediaTimeDuration);
 
 			//Write media in loop while allowed
 			while (vMediaFoundationInstance.vMediaWriteLoopAllowed)

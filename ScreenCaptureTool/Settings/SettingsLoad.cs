@@ -36,21 +36,22 @@ namespace ScreenCapture
                 textblock_ScreenshotSaveQuality.Text = textblock_ScreenshotSaveQuality.Tag + SettingLoad(vConfigurationScreenCaptureTool, "ScreenshotSaveQuality", typeof(string)) + "%";
                 slider_ScreenshotSaveQuality.Value = SettingLoad(vConfigurationScreenCaptureTool, "ScreenshotSaveQuality", typeof(double));
 
-                textblock_ScreenshotMaxPixelDimension.Text = textblock_ScreenshotMaxPixelDimension.Tag + SettingLoad(vConfigurationScreenCaptureTool, "ScreenshotMaxPixelDimension", typeof(string)) + "px";
+                textblock_ScreenshotMaxPixelDimension.Text = textblock_ScreenshotMaxPixelDimension.Tag + SettingLoad(vConfigurationScreenCaptureTool, "ScreenshotMaxPixelDimension", typeof(string)) + " px";
                 slider_ScreenshotMaxPixelDimension.Value = SettingLoad(vConfigurationScreenCaptureTool, "ScreenshotMaxPixelDimension", typeof(double));
 
                 //Recording
                 combobox_VideoSaveFormat.SelectedIndex = SettingLoad(vConfigurationScreenCaptureTool, "VideoSaveFormat", typeof(int));
 
                 int VideoFrameRate = SettingLoad(vConfigurationScreenCaptureTool, "VideoFrameRate", typeof(int));
-                combobox_VideoFrameRate.SelectedItem = combobox_VideoFrameRate.Items.Cast<ComboBoxItemValue>().FirstOrDefault(x => x.Value == VideoFrameRate.ToString());
+                textblock_VideoFrameRate.Text = textblock_VideoFrameRate.Tag + VideoFrameRate.ToString() + " fps";
+                slider_VideoFrameRate.Value = VideoFrameRate;
 
                 combobox_VideoRateControl.SelectedIndex = SettingLoad(vConfigurationScreenCaptureTool, "VideoRateControl", typeof(int));
 
                 textblock_VideoBitRate.Text = textblock_VideoBitRate.Tag + SettingLoad(vConfigurationScreenCaptureTool, "VideoBitRate", typeof(string)) + " Kbps";
                 slider_VideoBitRate.Value = SettingLoad(vConfigurationScreenCaptureTool, "VideoBitRate", typeof(double));
 
-                textblock_VideoMaxPixelDimension.Text = textblock_VideoMaxPixelDimension.Tag + SettingLoad(vConfigurationScreenCaptureTool, "VideoMaxPixelDimension", typeof(string)) + "px";
+                textblock_VideoMaxPixelDimension.Text = textblock_VideoMaxPixelDimension.Tag + SettingLoad(vConfigurationScreenCaptureTool, "VideoMaxPixelDimension", typeof(string)) + " px";
                 slider_VideoMaxPixelDimension.Value = SettingLoad(vConfigurationScreenCaptureTool, "VideoMaxPixelDimension", typeof(double));
 
                 combobox_AudioSaveFormat.SelectedIndex = SettingLoad(vConfigurationScreenCaptureTool, "AudioSaveFormat", typeof(int));

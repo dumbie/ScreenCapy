@@ -48,7 +48,7 @@ namespace ScreenCapture
                     },
                     new ComboBoxItemValue()
                     {
-                        Text = "HEVC",
+                        Text = "H265 / HEVC",
                     },
                     new ComboBoxItemValue()
                     {
@@ -58,23 +58,6 @@ namespace ScreenCapture
                 combobox_VideoSaveFormat.Items.Clear();
                 combobox_VideoSaveFormat.ItemsSource = itemsVideoSaveFormat;
                 combobox_VideoSaveFormat.DisplayMemberPath = "Text";
-
-                List<ComboBoxItemValue> itemsVideoFrameRate = new List<ComboBoxItemValue>
-                {
-                    new ComboBoxItemValue()
-                    {
-                        Text = "30 FPS",
-                        Value = "30"
-                    },
-                    new ComboBoxItemValue()
-                    {
-                        Text = "60 FPS",
-                        Value = "60"
-                    }
-                };
-                combobox_VideoFrameRate.Items.Clear();
-                combobox_VideoFrameRate.ItemsSource = itemsVideoFrameRate;
-                combobox_VideoFrameRate.DisplayMemberPath = "Text";
 
                 List<ComboBoxItemValue> itemsAudioSaveFormat = new List<ComboBoxItemValue>
                 {

@@ -56,7 +56,7 @@ namespace ScreenCapture
 
                 slider_ScreenshotMaxPixelDimension.ValueChanged += (sender, e) =>
                 {
-                    textblock_ScreenshotMaxPixelDimension.Text = textblock_ScreenshotMaxPixelDimension.Tag + slider_ScreenshotMaxPixelDimension.Value.ToString() + "px";
+                    textblock_ScreenshotMaxPixelDimension.Text = textblock_ScreenshotMaxPixelDimension.Tag + slider_ScreenshotMaxPixelDimension.Value.ToString() + " px";
                     SettingSave(vConfigurationScreenCaptureTool, "ScreenshotMaxPixelDimension", slider_ScreenshotMaxPixelDimension.Value);
                 };
 
@@ -66,10 +66,10 @@ namespace ScreenCapture
                     SettingSave(vConfigurationScreenCaptureTool, "VideoSaveFormat", combobox_VideoSaveFormat.SelectedIndex);
                 };
 
-                combobox_VideoFrameRate.SelectionChanged += (sender, e) =>
+                slider_VideoFrameRate.ValueChanged += (sender, e) =>
                 {
-                    ComboBoxItemValue saveValue = (ComboBoxItemValue)combobox_VideoFrameRate.SelectedItem;
-                    SettingSave(vConfigurationScreenCaptureTool, "VideoFrameRate", saveValue.Value);
+                    textblock_VideoFrameRate.Text = textblock_VideoFrameRate.Tag + slider_VideoFrameRate.Value.ToString() + " fps";
+                    SettingSave(vConfigurationScreenCaptureTool, "VideoFrameRate", slider_VideoFrameRate.Value);
                 };
 
                 combobox_VideoRateControl.SelectionChanged += (sender, e) =>
@@ -85,7 +85,7 @@ namespace ScreenCapture
 
                 slider_VideoMaxPixelDimension.ValueChanged += (sender, e) =>
                 {
-                    textblock_VideoMaxPixelDimension.Text = textblock_VideoMaxPixelDimension.Tag + slider_VideoMaxPixelDimension.Value.ToString() + "px";
+                    textblock_VideoMaxPixelDimension.Text = textblock_VideoMaxPixelDimension.Tag + slider_VideoMaxPixelDimension.Value.ToString() + " px";
                     SettingSave(vConfigurationScreenCaptureTool, "VideoMaxPixelDimension", slider_VideoMaxPixelDimension.Value);
                 };
 
