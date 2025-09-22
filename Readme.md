@@ -37,6 +37,9 @@ When you are walking into any problems or a bug you can go to my help page at ht
 If you appreciate my project and want to support me you can make a donation through https://donation.arnoldvink.com
 
 ## Changelog
+v2.5.0.0 (22-September-2025)
+- Changed frame rate setting to slider from 1 to 120 fps.
+
 v2.4.0.0 (20-June-2025)
 - Added setting to include window title in filename.
 - Middle mouse click on tray icon stops video capture.
