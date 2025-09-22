@@ -37,23 +37,23 @@ namespace ScreenCapture
             catch { }
         }
 
-        private static async void NotifyIcon_MouseUp(object sender, MouseEventArgs args)
+        private static void NotifyIcon_MouseUp(object sender, MouseEventArgs args)
         {
             try
             {
                 if (args.Button == MouseButtons.Middle)
                 {
-                    await AppExit.Exit();
+                    AppExit.Exit();
                 }
             }
             catch { }
         }
 
-        private static async void NotifyIcon_Stop(object sender, EventArgs args)
+        private static void NotifyIcon_Stop(object sender, EventArgs args)
         {
             try
             {
-                await AppExit.Exit();
+                AppExit.Exit();
             }
             catch { }
         }

@@ -50,7 +50,7 @@ namespace ScreenCapture
                         await UpdateCheck("dumbie", "ScreenCaptureTool", false);
                     }
                     else if (SelStackPanel.Name == "menuButtonClose") { this.Close(); }
-                    else if (SelStackPanel.Name == "menuButtonExit") { await AppExit.Exit_Prompt(); }
+                    else if (SelStackPanel.Name == "menuButtonExit") { AppExit.Exit_Prompt(); }
                 }
             }
             catch { }

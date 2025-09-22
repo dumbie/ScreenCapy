@@ -4,14 +4,13 @@ using ScreenCaptureImport;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading.Tasks;
 
 namespace ScreenCapture
 {
     public class AppExit
     {
         //Application close prompt
-        public static async Task Exit_Prompt()
+        public static void Exit_Prompt()
         {
             try
             {
@@ -22,14 +21,14 @@ namespace ScreenCapture
                 string messageResult = AVMessageBox.Popup(null, "Do you really want to exit Screen Capture Tool?", "You will no longer be able to take screenshots using the set shortcuts.", messageAnswers);
                 if (messageResult == "Exit application")
                 {
-                    await Exit();
+                    Exit();
                 }
             }
             catch { }
         }
 
         //Close application
-        public static async Task Exit()
+        public static void Exit()
         {
             try
             {
@@ -62,7 +61,7 @@ namespace ScreenCapture
                 catch { }
 
                 //Stop keyboard hotkeys
-                await AVInputOutputHotkeyHook.Stop();
+                AVInputOutputHotkeyHook.Stop();
 
                 //Hide the visible tray icons
                 AVDispatcherInvoke.DispatcherInvoke(delegate

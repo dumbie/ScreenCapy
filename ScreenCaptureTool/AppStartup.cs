@@ -85,7 +85,7 @@ namespace ScreenCapture
                     }
 
                     //Close application
-                    await AppExit.Exit();
+                    AppExit.Exit();
                 }
                 else if (launchAction == CaptureTypes.Video)
                 {
@@ -93,7 +93,7 @@ namespace ScreenCapture
                     if (processRunningVideo)
                     {
                         Debug.WriteLine("Application is already running, closing the process");
-                        await AppExit.Exit();
+                        AppExit.Exit();
                         return;
                     }
 
@@ -130,7 +130,7 @@ namespace ScreenCapture
                         vWindowOverlay.Hide();
 
                         //Close application
-                        await AppExit.Exit();
+                        AppExit.Exit();
                     }
                 }
                 else
@@ -139,7 +139,7 @@ namespace ScreenCapture
                     if (processRunningTool)
                     {
                         Debug.WriteLine("Application is already running, closing the process");
-                        await AppExit.Exit();
+                        AppExit.Exit();
                         return;
                     }
 

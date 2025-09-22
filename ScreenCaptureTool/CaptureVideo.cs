@@ -28,7 +28,7 @@ namespace ScreenCapture
                 if (CaptureImport.CaptureVideoIsRecording())
                 {
                     Debug.WriteLine("Video capture process is running, stopping video capture.");
-                    await AppExit.Exit();
+                    AppExit.Exit();
                 }
                 else
                 {
@@ -79,22 +79,22 @@ namespace ScreenCapture
             }
         }
 
-        public static async void CaptureEventVideoCaptureStopped()
+        public static void CaptureEventVideoCaptureStopped()
         {
             try
             {
                 Debug.WriteLine("Video capture stopped event triggered, closing application.");
-                await AppExit.Exit();
+                AppExit.Exit();
             }
             catch { }
         }
 
-        public static async void CaptureEventDeviceChangeDetected()
+        public static void CaptureEventDeviceChangeDetected()
         {
             try
             {
                 Debug.WriteLine("Device change event triggered, stopping capture and closing application.");
-                await AppExit.Exit();
+                AppExit.Exit();
             }
             catch { }
         }

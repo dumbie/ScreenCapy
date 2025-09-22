@@ -113,11 +113,11 @@ namespace ScreenCapture
             catch { }
         }
 
-        public static async void NotifyIcon_Exit(object sender, EventArgs args)
+        public static void NotifyIcon_Exit(object sender, EventArgs args)
         {
             try
             {
-                await AppExit.Exit_Prompt();
+                AppExit.Exit_Prompt();
             }
             catch { }
         }
