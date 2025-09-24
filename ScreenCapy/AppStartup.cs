@@ -25,7 +25,7 @@ namespace ScreenCapture
                 vWindowMain.Settings_Check();
 
                 //Check if capture process is running
-                List<ProcessMulti> screenCaptureProcess = Get_ProcessesMultiByName("ScreenCaptureTool", true);
+                List<ProcessMulti> screenCaptureProcess = Get_ProcessesMultiByName("ScreenCapy", true);
                 bool processRunningTool = screenCaptureProcess.Count(x => string.IsNullOrWhiteSpace(x.Argument)) > 1;
                 bool processRunningVideo = screenCaptureProcess.Count(x => x.Argument.ToLower() == "-video") > 1;
 
@@ -59,7 +59,7 @@ namespace ScreenCapture
                 //Check launch action
                 if (launchAction == CaptureTypes.Image)
                 {
-                    Debug.WriteLine("Screen Capture Tool image.");
+                    Debug.WriteLine("ScreenCapy image.");
 
                     //Capture image to file
                     CaptureResult captureResult = CaptureScreen.CaptureImageToFile();
@@ -69,7 +69,7 @@ namespace ScreenCapture
                     if (captureResult.Status == CaptureStatus.Success)
                     {
                         //Show capture overlay window
-                        if (SettingLoad(vConfigurationScreenCaptureTool, "OverlayShowScreenshot", typeof(bool)))
+                        if (SettingLoad(vConfigurationScreenCapy, "OverlayShowScreenshot", typeof(bool)))
                         {
                             vWindowOverlay.ShowOverlay(CaptureTypes.Image, captureResult.Message);
                             await Task.Delay(2500);
@@ -97,7 +97,7 @@ namespace ScreenCapture
                         return;
                     }
 
-                    Debug.WriteLine("Screen Capture Tool video.");
+                    Debug.WriteLine("ScreenCapy video.");
 
                     //Capture video to file
                     CaptureResult captureResult = CaptureScreen.StartCaptureVideoToFile();
@@ -107,7 +107,7 @@ namespace ScreenCapture
                     if (captureResult.Status == CaptureStatus.Success)
                     {
                         //Show capture overlay window
-                        if (SettingLoad(vConfigurationScreenCaptureTool, "OverlayShowRecording", typeof(bool)))
+                        if (SettingLoad(vConfigurationScreenCapy, "OverlayShowRecording", typeof(bool)))
                         {
                             vWindowOverlay.ShowOverlay(CaptureTypes.Video, captureResult.Message);
                         }
@@ -143,13 +143,13 @@ namespace ScreenCapture
                         return;
                     }
 
-                    Debug.WriteLine("Screen Capture Tool launch.");
+                    Debug.WriteLine("ScreenCapy launch.");
 
                     //Clean application update files
                     await UpdateCleanup();
 
                     //Check for available application update
-                    await UpdateCheck("dumbie", "ScreenCaptureTool", true);
+                    await UpdateCheck("dumbie", "ScreenCapy", true);
 
                     //Application initialize settings
                     vWindowMain.Settings_Load();
@@ -164,7 +164,7 @@ namespace ScreenCapture
                     AppTrayMenuTool.Application_CreateTrayMenu();
 
                     //Check settings if window needs to be shown
-                    if (SettingLoad(vConfigurationScreenCaptureTool, "AppFirstLaunch", typeof(bool)))
+                    if (SettingLoad(vConfigurationScreenCapy, "AppFirstLaunch", typeof(bool)))
                     {
                         Debug.WriteLine("First launch showing the window.");
                         vWindowMain.Show();

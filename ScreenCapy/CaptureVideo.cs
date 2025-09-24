@@ -34,7 +34,7 @@ namespace ScreenCapture
                 {
                     Debug.WriteLine("Starting video capture process.");
                     Process startProcess = new Process();
-                    startProcess.StartInfo.FileName = "ScreenCaptureTool.exe";
+                    startProcess.StartInfo.FileName = "ScreenCapy.exe";
                     startProcess.StartInfo.Arguments = "-video";
                     startProcess.Start();
                 }
@@ -56,7 +56,7 @@ namespace ScreenCapture
 
                     //Update the tray notify icon
                     AppTrayMenuCapture.TrayNotifyIcon.Text = AVFunctions.StringCut("Processing " + vCaptureFileName, 59, "...");
-                    AppTrayMenuCapture.TrayNotifyIcon.Icon = new Icon(AVEmbedded.EmbeddedResourceToStream(null, "ScreenCaptureTool.Assets.AppIconProcessing.ico"));
+                    AppTrayMenuCapture.TrayNotifyIcon.Icon = new Icon(AVEmbedded.EmbeddedResourceToStream(null, "ScreenCapy.Assets.AppIconProcessing.ico"));
                     AVDispatcherInvoke.DispatcherInvoke(delegate
                     {
                         vWindowOverlay.ellipse_Status.Fill = (SolidColorBrush)Application.Current.Resources["ApplicationIgnoredBrush"];
@@ -113,23 +113,23 @@ namespace ScreenCapture
                 CaptureImport.CaptureEventVideoCaptureStopped(CaptureEventVideoCaptureStopped);
                 CaptureImport.CaptureEventDeviceChangeDetected(CaptureEventDeviceChangeDetected);
 
-                //Capture tool settings
-                VideoFormats VideoSaveFormat = (VideoFormats)SettingLoad(vConfigurationScreenCaptureTool, "VideoSaveFormat", typeof(int));
-                VideoRateControls VideoRateControl = (VideoRateControls)SettingLoad(vConfigurationScreenCaptureTool, "VideoRateControl", typeof(int));
-                int VideoBitRate = SettingLoad(vConfigurationScreenCaptureTool, "VideoBitRate", typeof(int));
-                int VideoFrameRate = SettingLoad(vConfigurationScreenCaptureTool, "VideoFrameRate", typeof(int));
-                int VideoMaxPixelDimension = SettingLoad(vConfigurationScreenCaptureTool, "VideoMaxPixelDimension", typeof(int));
+                //Capture settings
+                VideoFormats VideoSaveFormat = (VideoFormats)SettingLoad(vConfigurationScreenCapy, "VideoSaveFormat", typeof(int));
+                VideoRateControls VideoRateControl = (VideoRateControls)SettingLoad(vConfigurationScreenCapy, "VideoRateControl", typeof(int));
+                int VideoBitRate = SettingLoad(vConfigurationScreenCapy, "VideoBitRate", typeof(int));
+                int VideoFrameRate = SettingLoad(vConfigurationScreenCapy, "VideoFrameRate", typeof(int));
+                int VideoMaxPixelDimension = SettingLoad(vConfigurationScreenCapy, "VideoMaxPixelDimension", typeof(int));
 
-                AudioFormats AudioSaveFormat = (AudioFormats)SettingLoad(vConfigurationScreenCaptureTool, "AudioSaveFormat", typeof(int));
-                int AudioChannels = SettingLoad(vConfigurationScreenCaptureTool, "AudioChannels", typeof(int));
-                int AudioBitRate = SettingLoad(vConfigurationScreenCaptureTool, "AudioBitRate", typeof(int));
-                int AudioBitDepth = SettingLoad(vConfigurationScreenCaptureTool, "AudioBitDepth", typeof(int));
-                int AudioSampleRate = SettingLoad(vConfigurationScreenCaptureTool, "AudioSampleRate", typeof(int));
+                AudioFormats AudioSaveFormat = (AudioFormats)SettingLoad(vConfigurationScreenCapy, "AudioSaveFormat", typeof(int));
+                int AudioChannels = SettingLoad(vConfigurationScreenCapy, "AudioChannels", typeof(int));
+                int AudioBitRate = SettingLoad(vConfigurationScreenCapy, "AudioBitRate", typeof(int));
+                int AudioBitDepth = SettingLoad(vConfigurationScreenCapy, "AudioBitDepth", typeof(int));
+                int AudioSampleRate = SettingLoad(vConfigurationScreenCapy, "AudioSampleRate", typeof(int));
 
-                int CaptureMonitorId = SettingLoad(vConfigurationScreenCaptureTool, "CaptureMonitorId", typeof(int)) - 1;
-                bool CaptureSoundEffect = SettingLoad(vConfigurationScreenCaptureTool, "CaptureSoundEffect", typeof(bool));
-                bool CaptureDrawBorder = SettingLoad(vConfigurationScreenCaptureTool, "CaptureDrawBorder", typeof(bool));
-                bool CaptureDrawMouseCursor = SettingLoad(vConfigurationScreenCaptureTool, "CaptureDrawMouseCursor", typeof(bool));
+                int CaptureMonitorId = SettingLoad(vConfigurationScreenCapy, "CaptureMonitorId", typeof(int)) - 1;
+                bool CaptureSoundEffect = SettingLoad(vConfigurationScreenCapy, "CaptureSoundEffect", typeof(bool));
+                bool CaptureDrawBorder = SettingLoad(vConfigurationScreenCapy, "CaptureDrawBorder", typeof(bool));
+                bool CaptureDrawMouseCursor = SettingLoad(vConfigurationScreenCapy, "CaptureDrawMouseCursor", typeof(bool));
 
                 //Screen capture settings
                 CaptureSettings captureSettings = new CaptureSettings();
@@ -166,7 +166,7 @@ namespace ScreenCapture
 
                 //Set save name
                 string fileSaveName = "Video";
-                if (SettingLoad(vConfigurationScreenCaptureTool, "SaveWindowTitle", typeof(bool)))
+                if (SettingLoad(vConfigurationScreenCapy, "SaveWindowTitle", typeof(bool)))
                 {
                     fileSaveName = Detail_WindowTitleByWindowHandle(GetForegroundWindow());
                     fileSaveName = AVFunctions.StringCut(fileSaveName, 150, string.Empty);
@@ -197,7 +197,7 @@ namespace ScreenCapture
                 vCaptureFileName = AVFiles.FileNameReplaceInvalidChars(fileSaveName + fileSaveDate + fileSaveDetails, "-");
 
                 //Check capture location
-                string fileSaveFolder = SettingLoad(vConfigurationScreenCaptureTool, "CaptureLocation", typeof(string));
+                string fileSaveFolder = SettingLoad(vConfigurationScreenCapy, "CaptureLocation", typeof(string));
                 if (string.IsNullOrWhiteSpace(fileSaveFolder) || !Directory.Exists(fileSaveFolder))
                 {
                     //Check captures folder in app directory

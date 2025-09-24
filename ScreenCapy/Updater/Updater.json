@@ -1,13 +1,14 @@
 ﻿{
   "UserName": "Dumbie",
-  "RepoName": "ScreenCaptureTool",
-  "FileName": "ScreenCaptureTool.zip",
-  "ExtractPathRemove": [ "ScreenCaptureTool" ],
+  "RepoName": "ScreenCapy",
+  "FileName": "ScreenCapy.zip",
+  "ExtractPathRemove": [ "ScreenCapy" ],
   "ProcessLaunch": [
     "Launcher.exe"
   ],
   "ProcessClose": [
     "ScreenCaptureTool",
+    "ScreenCapy",
     "Launcher"
   ],
   "FilesIgnore": [

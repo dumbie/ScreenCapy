@@ -14,7 +14,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArnoldVinkCode", "..\Arnold
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScreenCaptureImport", "ScreenCaptureImport\ScreenCaptureImport.csproj", "{42D2110A-342B-46CD-ABE7-57486ABE1584}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScreenCaptureTool", "ScreenCaptureTool\ScreenCaptureTool.csproj", "{008CE786-87C4-4B4B-A094-D2F4ACA44231}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScreenCapy", "ScreenCapy\ScreenCapy.csproj", "{008CE786-87C4-4B4B-A094-D2F4ACA44231}"
 	ProjectSection(ProjectDependencies) = postProject
 		{D41825DF-7633-4BD6-A5C5-119494CF050B} = {D41825DF-7633-4BD6-A5C5-119494CF050B}
 	EndProjectSection

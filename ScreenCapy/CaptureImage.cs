@@ -25,7 +25,7 @@ namespace ScreenCapture
                 {
                     Debug.WriteLine("Starting image capture process.");
                     Process startProcess = new Process();
-                    startProcess.StartInfo.FileName = "ScreenCaptureTool.exe";
+                    startProcess.StartInfo.FileName = "ScreenCapy.exe";
                     startProcess.StartInfo.Arguments = "-image";
                     startProcess.Start();
                 }
@@ -40,14 +40,14 @@ namespace ScreenCapture
         {
             try
             {
-                //Capture tool settings
-                ImageFormats ScreenshotSaveFormat = (ImageFormats)SettingLoad(vConfigurationScreenCaptureTool, "ScreenshotSaveFormat", typeof(int));
-                int ScreenshotSaveQuality = SettingLoad(vConfigurationScreenCaptureTool, "ScreenshotSaveQuality", typeof(int));
-                int ScreenshotMaxPixelDimension = SettingLoad(vConfigurationScreenCaptureTool, "ScreenshotMaxPixelDimension", typeof(int));
-                int CaptureMonitorId = SettingLoad(vConfigurationScreenCaptureTool, "CaptureMonitorId", typeof(int)) - 1;
-                bool CaptureSoundEffect = SettingLoad(vConfigurationScreenCaptureTool, "CaptureSoundEffect", typeof(bool));
-                bool CaptureDrawBorder = SettingLoad(vConfigurationScreenCaptureTool, "CaptureDrawBorder", typeof(bool));
-                bool CaptureDrawMouseCursor = SettingLoad(vConfigurationScreenCaptureTool, "CaptureDrawMouseCursor", typeof(bool));
+                //Capture settings
+                ImageFormats ScreenshotSaveFormat = (ImageFormats)SettingLoad(vConfigurationScreenCapy, "ScreenshotSaveFormat", typeof(int));
+                int ScreenshotSaveQuality = SettingLoad(vConfigurationScreenCapy, "ScreenshotSaveQuality", typeof(int));
+                int ScreenshotMaxPixelDimension = SettingLoad(vConfigurationScreenCapy, "ScreenshotMaxPixelDimension", typeof(int));
+                int CaptureMonitorId = SettingLoad(vConfigurationScreenCapy, "CaptureMonitorId", typeof(int)) - 1;
+                bool CaptureSoundEffect = SettingLoad(vConfigurationScreenCapy, "CaptureSoundEffect", typeof(bool));
+                bool CaptureDrawBorder = SettingLoad(vConfigurationScreenCapy, "CaptureDrawBorder", typeof(bool));
+                bool CaptureDrawMouseCursor = SettingLoad(vConfigurationScreenCapy, "CaptureDrawMouseCursor", typeof(bool));
 
                 //Screen capture settings
                 CaptureSettings captureSettings = new CaptureSettings();
@@ -77,7 +77,7 @@ namespace ScreenCapture
 
                 //Set save name
                 string fileSaveName = "Screenshot";
-                if (SettingLoad(vConfigurationScreenCaptureTool, "SaveWindowTitle", typeof(bool)))
+                if (SettingLoad(vConfigurationScreenCapy, "SaveWindowTitle", typeof(bool)))
                 {
                     fileSaveName = Detail_WindowTitleByWindowHandle(GetForegroundWindow());
                     fileSaveName = AVFunctions.StringCut(fileSaveName, 150, string.Empty);
@@ -108,7 +108,7 @@ namespace ScreenCapture
                 vCaptureFileName = AVFiles.FileNameReplaceInvalidChars(fileSaveName + fileSaveDate + fileSaveDetails, "-");
 
                 //Check capture location
-                string fileSaveFolder = SettingLoad(vConfigurationScreenCaptureTool, "CaptureLocation", typeof(string));
+                string fileSaveFolder = SettingLoad(vConfigurationScreenCapy, "CaptureLocation", typeof(string));
                 if (string.IsNullOrWhiteSpace(fileSaveFolder) || !Directory.Exists(fileSaveFolder))
                 {
                     //Check captures folder in app directory

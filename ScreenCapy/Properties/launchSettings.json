@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "ScreenCaptureTool": {
+    "ScreenCapy": {
       "commandName": "Project",
       "nativeDebugging": true
     }

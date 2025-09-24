@@ -17,7 +17,7 @@ namespace ScreenCapture
             try
             {
                 //Update first launch setting
-                SettingSave(vConfigurationScreenCaptureTool, "AppFirstLaunch", "False");
+                SettingSave(vConfigurationScreenCapy, "AppFirstLaunch", "False");
 
                 //Main menu functions
                 lb_Menu.PreviewKeyUp += lb_Menu_KeyPressUp;

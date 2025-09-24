@@ -18,7 +18,7 @@ namespace ScreenCapture
                 messageAnswers.Add("Exit application");
                 messageAnswers.Add("Cancel");
 
-                string messageResult = AVMessageBox.Popup(null, "Do you really want to exit Screen Capture Tool?", "You will no longer be able to take screenshots using the set shortcuts.", messageAnswers);
+                string messageResult = AVMessageBox.Popup(null, "Do you really want to exit ScreenCapy?", "You will no longer be able to take screenshots using the set shortcuts.", messageAnswers);
                 if (messageResult == "Exit application")
                 {
                     Exit();

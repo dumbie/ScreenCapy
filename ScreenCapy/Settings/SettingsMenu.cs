@@ -47,7 +47,7 @@ namespace ScreenCapture
                     else if (SelStackPanel.Name == "menuButtonUpdate")
                     {
                         //Check for available application update
-                        await UpdateCheck("dumbie", "ScreenCaptureTool", false);
+                        await UpdateCheck("dumbie", "ScreenCapy", false);
                     }
                     else if (SelStackPanel.Name == "menuButtonClose") { this.Close(); }
                     else if (SelStackPanel.Name == "menuButtonExit") { AppExit.Exit_Prompt(); }

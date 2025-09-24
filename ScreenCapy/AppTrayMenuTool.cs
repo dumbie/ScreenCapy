@@ -31,8 +31,8 @@ namespace ScreenCapture
                 TrayContextMenu.Items.Add("Exit", null, NotifyIcon_Exit);
 
                 //Initialize the tray notify icon
-                TrayNotifyIcon.Text = "Screen Capture Tool";
-                TrayNotifyIcon.Icon = new Icon(AVEmbedded.EmbeddedResourceToStream(null, "ScreenCaptureTool.Assets.AppIcon.ico"));
+                TrayNotifyIcon.Text = "ScreenCapy";
+                TrayNotifyIcon.Icon = new Icon(AVEmbedded.EmbeddedResourceToStream(null, "ScreenCapy.Assets.AppIcon.ico"));
 
                 //Handle Double Click event
                 TrayNotifyIcon.DoubleClick += NotifyIcon_DoubleClick;
@@ -54,7 +54,7 @@ namespace ScreenCapture
                     iconName = "AppIcon";
                 }
 
-                TrayNotifyIcon.Icon = new Icon(AVEmbedded.EmbeddedResourceToStream(null, "ScreenCaptureTool.Assets." + iconName + ".ico"));
+                TrayNotifyIcon.Icon = new Icon(AVEmbedded.EmbeddedResourceToStream(null, "ScreenCapy.Assets." + iconName + ".ico"));
             }
             catch { }
         }

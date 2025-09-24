@@ -11,7 +11,7 @@ namespace ScreenCapture
     public partial class AppVariables
     {
         //Application Variables
-        public static Configuration vConfigurationScreenCaptureTool = SettingLoadConfig("ScreenCaptureTool.exe.csettings");
+        public static Configuration vConfigurationScreenCapy = SettingLoadConfig("ScreenCapy.exe.csettings");
         public static bool vApplicationExiting = false;
 
         //Setting Variables
