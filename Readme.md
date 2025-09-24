@@ -1,7 +1,7 @@
-![ScreenCaptureTool](Screenshots/Screenshot1.png)
+![ScreenCapy](Screenshots/Screenshot1.png)
 
 ## Application Description
-Screen Capture Tool allows you to easily capture your screen to an image or video file.
+ScreenCapy allows you to easily capture your screen to an image or video file.
 
 ## Application Features
 - Save screencapture as JXR, PNG, JPG, BMP, TIF, HEIF or MP4.
@@ -9,15 +9,15 @@ Screen Capture Tool allows you to easily capture your screen to an image or vide
 - HDR to SDR tonemapping when needed.
 
 ## Installation Instructions
-1) Extract the ScreenCaptureTool folder to any directory you want on your device.
+1) Extract the ScreenCapy folder to any directory you want on your device.
 2) Make sure that you have installed all the requirements listed below.
 3) Run the Launcher executable and start capturing your screen.
 
 ## Uninstallation Instructions
-1) Remove the extracted ScreenCaptureTool directory.
+1) Remove the extracted ScreenCapy directory.
 
 ## Tips and tricks
-- Let Screen Capture Tool automatically launch on Windows startup for easier alltime usage.
+- Let ScreenCapy automatically launch on Windows startup for easier alltime usage.
 - For more information and help open the "Help" window or tab in the application.
 
 ## Known issues
@@ -46,4 +46,4 @@ v2.4.0.0 (20-June-2025)
 - Added capture error message to overlay.
 
 v2.2.0.0 (24-December-2024)
-- Released Screen Capture Tool.
+- Released ScreenCapy.

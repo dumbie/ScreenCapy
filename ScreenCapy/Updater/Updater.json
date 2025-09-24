@@ -14,6 +14,9 @@
   "FilesIgnore": [
     ".csettings"
   ],
+  "FilesDelete": [
+    "ScreenCaptureTool.exe"
+  ],
   "FoldersIgnore": [
     "Profiles/User"
   ],
