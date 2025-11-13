@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using static ArnoldVinkCode.AVProcess;
-using static ArnoldVinkCode.AVSettings;
 using static ArnoldVinkCode.AVUpdate;
 using static ScreenCapture.AppClasses;
 using static ScreenCapture.AppVariables;
@@ -69,7 +68,7 @@ namespace ScreenCapture
                     if (captureResult.Status == CaptureStatus.Success)
                     {
                         //Show capture overlay window
-                        if (SettingLoad(vConfigurationScreenCapy, "OverlayShowScreenshot", typeof(bool)))
+                        if (vSettings.Load("OverlayShowScreenshot", typeof(bool)))
                         {
                             vWindowOverlay.ShowOverlay(CaptureTypes.Image, captureResult.Message);
                             await Task.Delay(2500);
@@ -107,7 +106,7 @@ namespace ScreenCapture
                     if (captureResult.Status == CaptureStatus.Success)
                     {
                         //Show capture overlay window
-                        if (SettingLoad(vConfigurationScreenCapy, "OverlayShowRecording", typeof(bool)))
+                        if (vSettings.Load("OverlayShowRecording", typeof(bool)))
                         {
                             vWindowOverlay.ShowOverlay(CaptureTypes.Video, captureResult.Message);
                         }
@@ -164,7 +163,7 @@ namespace ScreenCapture
                     AppTrayMenuTool.Application_CreateTrayMenu();
 
                     //Check settings if window needs to be shown
-                    if (SettingLoad(vConfigurationScreenCapy, "AppFirstLaunch", typeof(bool)))
+                    if (vSettings.Load("AppFirstLaunch", typeof(bool)))
                     {
                         Debug.WriteLine("First launch showing the window.");
                         vWindowMain.Show();

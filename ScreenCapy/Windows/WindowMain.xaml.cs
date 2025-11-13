@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows;
-using static ArnoldVinkCode.AVSettings;
 using static ScreenCapture.AppVariables;
 
 namespace ScreenCapture
@@ -17,7 +16,7 @@ namespace ScreenCapture
             try
             {
                 //Update first launch setting
-                SettingSave(vConfigurationScreenCapy, "AppFirstLaunch", "False");
+                vSettings.Set("AppFirstLaunch", "False");
 
                 //Main menu functions
                 lb_Menu.PreviewKeyUp += lb_Menu_KeyPressUp;

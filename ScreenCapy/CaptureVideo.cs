@@ -10,7 +10,6 @@ using System.Windows;
 using System.Windows.Media;
 using static ArnoldVinkCode.AVInteropDll;
 using static ArnoldVinkCode.AVProcess;
-using static ArnoldVinkCode.AVSettings;
 using static ScreenCapture.AppVariables;
 
 namespace ScreenCapture
@@ -114,22 +113,22 @@ namespace ScreenCapture
                 CaptureImport.CaptureEventDeviceChangeDetected(CaptureEventDeviceChangeDetected);
 
                 //Capture settings
-                VideoFormats VideoSaveFormat = (VideoFormats)SettingLoad(vConfigurationScreenCapy, "VideoSaveFormat", typeof(int));
-                VideoRateControls VideoRateControl = (VideoRateControls)SettingLoad(vConfigurationScreenCapy, "VideoRateControl", typeof(int));
-                int VideoBitRate = SettingLoad(vConfigurationScreenCapy, "VideoBitRate", typeof(int));
-                int VideoFrameRate = SettingLoad(vConfigurationScreenCapy, "VideoFrameRate", typeof(int));
-                int VideoMaxPixelDimension = SettingLoad(vConfigurationScreenCapy, "VideoMaxPixelDimension", typeof(int));
+                VideoFormats VideoSaveFormat = (VideoFormats)vSettings.Load("VideoSaveFormat", typeof(int));
+                VideoRateControls VideoRateControl = (VideoRateControls)vSettings.Load("VideoRateControl", typeof(int));
+                int VideoBitRate = vSettings.Load("VideoBitRate", typeof(int));
+                int VideoFrameRate = vSettings.Load("VideoFrameRate", typeof(int));
+                int VideoMaxPixelDimension = vSettings.Load("VideoMaxPixelDimension", typeof(int));
 
-                AudioFormats AudioSaveFormat = (AudioFormats)SettingLoad(vConfigurationScreenCapy, "AudioSaveFormat", typeof(int));
-                int AudioChannels = SettingLoad(vConfigurationScreenCapy, "AudioChannels", typeof(int));
-                int AudioBitRate = SettingLoad(vConfigurationScreenCapy, "AudioBitRate", typeof(int));
-                int AudioBitDepth = SettingLoad(vConfigurationScreenCapy, "AudioBitDepth", typeof(int));
-                int AudioSampleRate = SettingLoad(vConfigurationScreenCapy, "AudioSampleRate", typeof(int));
+                AudioFormats AudioSaveFormat = (AudioFormats)vSettings.Load("AudioSaveFormat", typeof(int));
+                int AudioChannels = vSettings.Load("AudioChannels", typeof(int));
+                int AudioBitRate = vSettings.Load("AudioBitRate", typeof(int));
+                int AudioBitDepth = vSettings.Load("AudioBitDepth", typeof(int));
+                int AudioSampleRate = vSettings.Load("AudioSampleRate", typeof(int));
 
-                int CaptureMonitorId = SettingLoad(vConfigurationScreenCapy, "CaptureMonitorId", typeof(int)) - 1;
-                bool CaptureSoundEffect = SettingLoad(vConfigurationScreenCapy, "CaptureSoundEffect", typeof(bool));
-                bool CaptureDrawBorder = SettingLoad(vConfigurationScreenCapy, "CaptureDrawBorder", typeof(bool));
-                bool CaptureDrawMouseCursor = SettingLoad(vConfigurationScreenCapy, "CaptureDrawMouseCursor", typeof(bool));
+                int CaptureMonitorId = vSettings.Load("CaptureMonitorId", typeof(int)) - 1;
+                bool CaptureSoundEffect = vSettings.Load("CaptureSoundEffect", typeof(bool));
+                bool CaptureDrawBorder = vSettings.Load("CaptureDrawBorder", typeof(bool));
+                bool CaptureDrawMouseCursor = vSettings.Load("CaptureDrawMouseCursor", typeof(bool));
 
                 //Screen capture settings
                 CaptureSettings captureSettings = new CaptureSettings();
@@ -166,7 +165,7 @@ namespace ScreenCapture
 
                 //Set save name
                 string fileSaveName = "Video";
-                if (SettingLoad(vConfigurationScreenCapy, "SaveWindowTitle", typeof(bool)))
+                if (vSettings.Load("SaveWindowTitle", typeof(bool)))
                 {
                     fileSaveName = Detail_WindowTitleByWindowHandle(GetForegroundWindow());
                     fileSaveName = AVFunctions.StringCut(fileSaveName, 150, string.Empty);
@@ -197,7 +196,7 @@ namespace ScreenCapture
                 vCaptureFileName = AVFiles.FileNameReplaceInvalidChars(fileSaveName + fileSaveDate + fileSaveDetails, "-");
 
                 //Check capture location
-                string fileSaveFolder = SettingLoad(vConfigurationScreenCapy, "CaptureLocation", typeof(string));
+                string fileSaveFolder = vSettings.Load("CaptureLocation", typeof(string));
                 if (string.IsNullOrWhiteSpace(fileSaveFolder) || !Directory.Exists(fileSaveFolder))
                 {
                     //Check captures folder in app directory

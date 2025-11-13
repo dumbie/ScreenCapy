@@ -1,6 +1,5 @@
 ﻿using ArnoldVinkCode;
 using System.Threading.Tasks;
-using static ArnoldVinkCode.AVSettings;
 using static ScreenCapture.AppVariables;
 
 namespace ScreenCapture
@@ -12,7 +11,7 @@ namespace ScreenCapture
         {
             try
             {
-                int socketServerPort = SettingLoad(vConfigurationScreenCapy, "ServerPort", typeof(int));
+                int socketServerPort = vSettings.Load("ServerPort", typeof(int));
                 vArnoldVinkSockets = new ArnoldVinkSockets("127.0.0.1", socketServerPort, false, true);
                 vArnoldVinkSockets.vSocketTimeout = 250;
                 vArnoldVinkSockets.EventBytesReceived += ReceivedSocketHandler;

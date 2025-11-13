@@ -2,7 +2,6 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Forms;
-using static ArnoldVinkCode.AVSettings;
 using static ScreenCapture.AppVariables;
 
 namespace ScreenCapture
@@ -20,7 +19,7 @@ namespace ScreenCapture
                     if (!string.IsNullOrWhiteSpace(folderBrowserDialog.SelectedPath))
                     {
                         Debug.WriteLine("Screenshot location selected: " + folderBrowserDialog.SelectedPath);
-                        SettingSave(vConfigurationScreenCapy, "CaptureLocation", folderBrowserDialog.SelectedPath);
+                        vSettings.Set("CaptureLocation", folderBrowserDialog.SelectedPath);
                         textblock_CaptureLocation.Text = textblock_CaptureLocation.Tag + folderBrowserDialog.SelectedPath;
                     }
                 }
@@ -44,7 +43,7 @@ namespace ScreenCapture
             try
             {
                 //Check screenshot location
-                string screenshotSaveFolder = SettingLoad(vConfigurationScreenCapy, "CaptureLocation", typeof(string));
+                string screenshotSaveFolder = vSettings.Load("CaptureLocation", typeof(string));
                 if (!Directory.Exists(screenshotSaveFolder))
                 {
                     //Check captures folder in app directory

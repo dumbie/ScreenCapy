@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Interop;
 using static ArnoldVinkCode.AVActions;
 using static ArnoldVinkCode.AVInteropDll;
-using static ArnoldVinkCode.AVSettings;
 using static ArnoldVinkCode.AVWindowFunctions;
 using static ScreenCapture.AppClasses;
 using static ScreenCapture.AppVariables;
@@ -104,7 +103,7 @@ namespace ScreenCapture
         {
             try
             {
-                string overlayPosition = SettingLoad(vConfigurationScreenCapy, "OverlayPosition", typeof(string));
+                string overlayPosition = vSettings.Load("OverlayPosition", typeof(string));
                 if (overlayPosition == "TopLeft")
                 {
                     grid_Overlay.VerticalAlignment = VerticalAlignment.Top;

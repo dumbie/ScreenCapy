@@ -1,17 +1,15 @@
 ﻿using ArnoldVinkCode;
 using ScreenCaptureImport;
 using System.Collections.Generic;
-using System.Configuration;
 using static ArnoldVinkCode.AVClasses;
 using static ArnoldVinkCode.AVJsonFunctions;
-using static ArnoldVinkCode.AVSettings;
 
 namespace ScreenCapture
 {
     public partial class AppVariables
     {
         //Application Variables
-        public static Configuration vConfigurationScreenCapy = SettingLoadConfig("ScreenCapy.exe.csettings");
+        public static AVSettingsJson vSettings = new AVSettingsJson("ScreenCapy.settings.json");
         public static bool vApplicationExiting = false;
 
         //Setting Variables

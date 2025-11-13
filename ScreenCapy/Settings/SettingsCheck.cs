@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using static ArnoldVinkCode.AVSettings;
 using static ScreenCapture.AppVariables;
 
 namespace ScreenCapture
@@ -13,42 +12,42 @@ namespace ScreenCapture
             try
             {
                 //First Launch
-                if (!SettingCheck(vConfigurationScreenCapy, "AppFirstLaunch")) { SettingSave(vConfigurationScreenCapy, "AppFirstLaunch", "True"); }
+                if (!vSettings.Check("AppFirstLaunch")) { vSettings.Set("AppFirstLaunch", "True"); }
 
                 //Server settings
-                if (!SettingCheck(vConfigurationScreenCapy, "ServerPort")) { SettingSave(vConfigurationScreenCapy, "ServerPort", "26762"); }
+                if (!vSettings.Check("ServerPort")) { vSettings.Set("ServerPort", "26762"); }
 
                 //General
-                if (!SettingCheck(vConfigurationScreenCapy, "CaptureSoundEffect")) { SettingSave(vConfigurationScreenCapy, "CaptureSoundEffect", "True"); }
-                if (!SettingCheck(vConfigurationScreenCapy, "CaptureMonitorId")) { SettingSave(vConfigurationScreenCapy, "CaptureMonitorId", "1"); }
-                if (!SettingCheck(vConfigurationScreenCapy, "CaptureDrawBorder")) { SettingSave(vConfigurationScreenCapy, "CaptureDrawBorder", "False"); }
-                if (!SettingCheck(vConfigurationScreenCapy, "CaptureDrawMouseCursor")) { SettingSave(vConfigurationScreenCapy, "CaptureDrawMouseCursor", "True"); }
+                if (!vSettings.Check("CaptureSoundEffect")) { vSettings.Set("CaptureSoundEffect", "True"); }
+                if (!vSettings.Check("CaptureMonitorId")) { vSettings.Set("CaptureMonitorId", "1"); }
+                if (!vSettings.Check("CaptureDrawBorder")) { vSettings.Set("CaptureDrawBorder", "False"); }
+                if (!vSettings.Check("CaptureDrawMouseCursor")) { vSettings.Set("CaptureDrawMouseCursor", "True"); }
 
                 //Saving
-                if (!SettingCheck(vConfigurationScreenCapy, "SaveWindowTitle")) { SettingSave(vConfigurationScreenCapy, "SaveWindowTitle", "True"); }
-                if (!SettingCheck(vConfigurationScreenCapy, "CaptureLocation")) { SettingSave(vConfigurationScreenCapy, "CaptureLocation", "Captures"); }
+                if (!vSettings.Check("SaveWindowTitle")) { vSettings.Set("SaveWindowTitle", "True"); }
+                if (!vSettings.Check("CaptureLocation")) { vSettings.Set("CaptureLocation", "Captures"); }
 
                 //Screenshot
-                if (!SettingCheck(vConfigurationScreenCapy, "ScreenshotSaveFormat")) { SettingSave(vConfigurationScreenCapy, "ScreenshotSaveFormat", "0"); }
-                if (!SettingCheck(vConfigurationScreenCapy, "ScreenshotSaveQuality")) { SettingSave(vConfigurationScreenCapy, "ScreenshotSaveQuality", "80"); }
-                if (!SettingCheck(vConfigurationScreenCapy, "ScreenshotMaxPixelDimension")) { SettingSave(vConfigurationScreenCapy, "ScreenshotMaxPixelDimension", "4320"); }
+                if (!vSettings.Check("ScreenshotSaveFormat")) { vSettings.Set("ScreenshotSaveFormat", "0"); }
+                if (!vSettings.Check("ScreenshotSaveQuality")) { vSettings.Set("ScreenshotSaveQuality", "80"); }
+                if (!vSettings.Check("ScreenshotMaxPixelDimension")) { vSettings.Set("ScreenshotMaxPixelDimension", "4320"); }
 
                 //Recording
-                if (!SettingCheck(vConfigurationScreenCapy, "VideoSaveFormat")) { SettingSave(vConfigurationScreenCapy, "VideoSaveFormat", "0"); }
-                if (!SettingCheck(vConfigurationScreenCapy, "VideoFrameRate")) { SettingSave(vConfigurationScreenCapy, "VideoFrameRate", "60"); }
-                if (!SettingCheck(vConfigurationScreenCapy, "VideoRateControl")) { SettingSave(vConfigurationScreenCapy, "VideoRateControl", "0"); }
-                if (!SettingCheck(vConfigurationScreenCapy, "VideoBitRate")) { SettingSave(vConfigurationScreenCapy, "VideoBitRate", "35000"); }
-                if (!SettingCheck(vConfigurationScreenCapy, "VideoMaxPixelDimension")) { SettingSave(vConfigurationScreenCapy, "VideoMaxPixelDimension", "1440"); }
-                if (!SettingCheck(vConfigurationScreenCapy, "AudioSaveFormat")) { SettingSave(vConfigurationScreenCapy, "AudioSaveFormat", "1"); }
-                if (!SettingCheck(vConfigurationScreenCapy, "AudioChannels")) { SettingSave(vConfigurationScreenCapy, "AudioChannels", "2"); }
-                if (!SettingCheck(vConfigurationScreenCapy, "AudioBitRate")) { SettingSave(vConfigurationScreenCapy, "AudioBitRate", "192"); }
-                if (!SettingCheck(vConfigurationScreenCapy, "AudioBitDepth")) { SettingSave(vConfigurationScreenCapy, "AudioBitDepth", "16"); }
-                if (!SettingCheck(vConfigurationScreenCapy, "AudioSampleRate")) { SettingSave(vConfigurationScreenCapy, "AudioSampleRate", "48000"); }
+                if (!vSettings.Check("VideoSaveFormat")) { vSettings.Set("VideoSaveFormat", "0"); }
+                if (!vSettings.Check("VideoFrameRate")) { vSettings.Set("VideoFrameRate", "60"); }
+                if (!vSettings.Check("VideoRateControl")) { vSettings.Set("VideoRateControl", "0"); }
+                if (!vSettings.Check("VideoBitRate")) { vSettings.Set("VideoBitRate", "35000"); }
+                if (!vSettings.Check("VideoMaxPixelDimension")) { vSettings.Set("VideoMaxPixelDimension", "1440"); }
+                if (!vSettings.Check("AudioSaveFormat")) { vSettings.Set("AudioSaveFormat", "1"); }
+                if (!vSettings.Check("AudioChannels")) { vSettings.Set("AudioChannels", "2"); }
+                if (!vSettings.Check("AudioBitRate")) { vSettings.Set("AudioBitRate", "192"); }
+                if (!vSettings.Check("AudioBitDepth")) { vSettings.Set("AudioBitDepth", "16"); }
+                if (!vSettings.Check("AudioSampleRate")) { vSettings.Set("AudioSampleRate", "48000"); }
 
                 //Overlay
-                if (!SettingCheck(vConfigurationScreenCapy, "OverlayShowScreenshot")) { SettingSave(vConfigurationScreenCapy, "OverlayShowScreenshot", "True"); }
-                if (!SettingCheck(vConfigurationScreenCapy, "OverlayShowRecording")) { SettingSave(vConfigurationScreenCapy, "OverlayShowRecording", "True"); }
-                if (!SettingCheck(vConfigurationScreenCapy, "OverlayPosition")) { SettingSave(vConfigurationScreenCapy, "OverlayPosition", "BottomCenter"); }
+                if (!vSettings.Check("OverlayShowScreenshot")) { vSettings.Set("OverlayShowScreenshot", "True"); }
+                if (!vSettings.Check("OverlayShowRecording")) { vSettings.Set("OverlayShowRecording", "True"); }
+                if (!vSettings.Check("OverlayPosition")) { vSettings.Set("OverlayPosition", "BottomCenter"); }
             }
             catch (Exception ex)
             {

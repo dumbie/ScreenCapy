@@ -6,7 +6,6 @@ using System.IO;
 using System.Threading.Tasks;
 using static ArnoldVinkCode.AVInteropDll;
 using static ArnoldVinkCode.AVProcess;
-using static ArnoldVinkCode.AVSettings;
 using static ScreenCapture.AppVariables;
 
 namespace ScreenCapture
@@ -41,13 +40,13 @@ namespace ScreenCapture
             try
             {
                 //Capture settings
-                ImageFormats ScreenshotSaveFormat = (ImageFormats)SettingLoad(vConfigurationScreenCapy, "ScreenshotSaveFormat", typeof(int));
-                int ScreenshotSaveQuality = SettingLoad(vConfigurationScreenCapy, "ScreenshotSaveQuality", typeof(int));
-                int ScreenshotMaxPixelDimension = SettingLoad(vConfigurationScreenCapy, "ScreenshotMaxPixelDimension", typeof(int));
-                int CaptureMonitorId = SettingLoad(vConfigurationScreenCapy, "CaptureMonitorId", typeof(int)) - 1;
-                bool CaptureSoundEffect = SettingLoad(vConfigurationScreenCapy, "CaptureSoundEffect", typeof(bool));
-                bool CaptureDrawBorder = SettingLoad(vConfigurationScreenCapy, "CaptureDrawBorder", typeof(bool));
-                bool CaptureDrawMouseCursor = SettingLoad(vConfigurationScreenCapy, "CaptureDrawMouseCursor", typeof(bool));
+                ImageFormats ScreenshotSaveFormat = (ImageFormats)vSettings.Load("ScreenshotSaveFormat", typeof(int));
+                int ScreenshotSaveQuality = vSettings.Load("ScreenshotSaveQuality", typeof(int));
+                int ScreenshotMaxPixelDimension = vSettings.Load("ScreenshotMaxPixelDimension", typeof(int));
+                int CaptureMonitorId = vSettings.Load("CaptureMonitorId", typeof(int)) - 1;
+                bool CaptureSoundEffect = vSettings.Load("CaptureSoundEffect", typeof(bool));
+                bool CaptureDrawBorder = vSettings.Load("CaptureDrawBorder", typeof(bool));
+                bool CaptureDrawMouseCursor = vSettings.Load("CaptureDrawMouseCursor", typeof(bool));
 
                 //Screen capture settings
                 CaptureSettings captureSettings = new CaptureSettings();
@@ -77,7 +76,7 @@ namespace ScreenCapture
 
                 //Set save name
                 string fileSaveName = "Screenshot";
-                if (SettingLoad(vConfigurationScreenCapy, "SaveWindowTitle", typeof(bool)))
+                if (vSettings.Load("SaveWindowTitle", typeof(bool)))
                 {
                     fileSaveName = Detail_WindowTitleByWindowHandle(GetForegroundWindow());
                     fileSaveName = AVFunctions.StringCut(fileSaveName, 150, string.Empty);
@@ -108,7 +107,7 @@ namespace ScreenCapture
                 vCaptureFileName = AVFiles.FileNameReplaceInvalidChars(fileSaveName + fileSaveDate + fileSaveDetails, "-");
 
                 //Check capture location
-                string fileSaveFolder = SettingLoad(vConfigurationScreenCapy, "CaptureLocation", typeof(string));
+                string fileSaveFolder = vSettings.Load("CaptureLocation", typeof(string));
                 if (string.IsNullOrWhiteSpace(fileSaveFolder) || !Directory.Exists(fileSaveFolder))
                 {
                     //Check captures folder in app directory
