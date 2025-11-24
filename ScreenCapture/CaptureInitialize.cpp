@@ -122,12 +122,12 @@ namespace
 				return capResult;
 			}
 
-			//Set maximum queue back buffer frames
-			hResult = vDirectXInstance.iDxgiDevice4->SetMaximumFrameLatency(16);
-			if (FAILED(hResult))
-			{
-				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"SetMaximumFrameLatency failed") };
-			}
+			////Set maximum queue back buffer frames
+			//hResult = vDirectXInstance.iDxgiDevice4->SetMaximumFrameLatency(16);
+			//if (FAILED(hResult))
+			//{
+			//	return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"SetMaximumFrameLatency failed") };
+			//}
 
 			////Set gpu thread scheduler priority
 			//hResult = vDirectXInstance.iDxgiDevice4->SetGPUThreadPriority(0);
