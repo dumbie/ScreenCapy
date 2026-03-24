@@ -12,7 +12,7 @@ namespace
 		AVFinally(
 			{
 				//Release resources
-				TextureResetVariablesLoop();
+				DirectXResetVariablesLoop();
 			});
 		try
 		{
@@ -27,14 +27,14 @@ namespace
 
 			//Convert frame capture to texture
 			auto access = frame.Surface().as<Windows::Graphics::DirectX::Direct3D11::IDirect3DDxgiInterfaceAccess>();
-			hResult = access->GetInterface(winrt::guid_of<ID3D11Texture2D>(), (void**)&vCaptureInstance.iD3D11Texture2D0Screen);
+			hResult = access->GetInterface(winrt::guid_of<ID3D11Texture2D>(), (void**)&vDirectXInstance.iD3D11Texture2D0ScreenCapture);
 			if (FAILED(hResult))
 			{
 				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed converting frame capture to texture") };
 			}
 
 			//Draw screen capture texture
-			capResult = RenderDrawTexture2D(vCaptureInstance.iD3D11Texture2D0Screen, VertexVerticesCountScreen);
+			capResult = RenderDrawTexture2D(vDirectXInstance.iD3D11Texture2D0ScreenCapture, VertexVerticesCountScreen);
 			if (capResult.Status != CaptureStatus::Success)
 			{
 				return capResult;
@@ -55,7 +55,7 @@ namespace
 		AVFinally(
 			{
 				//Release resources
-				TextureResetVariablesLoop();
+				DirectXResetVariablesLoop();
 			});
 		try
 		{
@@ -73,17 +73,14 @@ namespace
 			}
 
 			//Convert to cpu read texture
-			capResult = Texture2DConvertToCpuRead(vCaptureInstance.iD3D11Texture2D0RenderTargetView);
+			capResult = Texture2DConvertToCpuRead(vDirectXInstance.iD3D11Texture2D0RenderTargetViewPass2);
 			if (capResult.Status != CaptureStatus::Success)
 			{
 				return {};
 			}
 
 			//Convert texture to screen bytes
-			std::vector<BYTE> screenBytes = Texture2DConvertToScreenBytes(vCaptureInstance.iD3D11Texture2D0CpuRead, flipScreen);
-
-			//Return result
-			return screenBytes;
+			return Texture2DConvertToScreenBytes(vDirectXInstance.iD3D11Texture2D0CpuRead, flipScreen);
 		}
 		catch (...)
 		{

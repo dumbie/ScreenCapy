@@ -16,14 +16,14 @@ namespace
 				if (vCaptureDetails.HDRtoSDR)
 				{
 					vBitmapImageInstance.iWicPixelFormatGuidSource = GUID_WICPixelFormat32bppBGRA;
-					vCaptureInstance.vCaptureDxgiFormat = DXGI_FORMAT_B8G8R8A8_UNORM; //DXGI_FORMAT_B8G8R8A8_UNORM_SRGB
+					vDirectXInstance.iDxgiFormat = DXGI_FORMAT_B8G8R8A8_UNORM; //DXGI_FORMAT_B8G8R8A8_UNORM_SRGB
 					vCaptureDetails.PixelByteSize = 4;
 					vCaptureDetails.SDRWhiteLevel = GetMonitorSDRWhiteLevel(vDirectXInstance.iDxgiOutputDescription1.Monitor);
 				}
 				else
 				{
 					vBitmapImageInstance.iWicPixelFormatGuidSource = GUID_WICPixelFormat64bppRGBAHalf;
-					vCaptureInstance.vCaptureDxgiFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
+					vDirectXInstance.iDxgiFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
 					vCaptureDetails.PixelByteSize = 8;
 				}
 			}
@@ -31,7 +31,7 @@ namespace
 			{
 				vCaptureDetails.HDRtoSDR = false;
 				vBitmapImageInstance.iWicPixelFormatGuidSource = GUID_WICPixelFormat32bppBGRA;
-				vCaptureInstance.vCaptureDxgiFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
+				vDirectXInstance.iDxgiFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
 				vCaptureDetails.PixelByteSize = 4;
 			}
 
@@ -45,8 +45,8 @@ namespace
 			vCaptureDetails.OriginalWidth = monitorPixelsWidth;
 			vCaptureDetails.OriginalHeight = monitorPixelsHeight;
 			vCaptureDetails.RefreshRate = monitorRefreshRate;
-			vCaptureInstance.vCaptureTextureResizing = vCaptureSettings.MaxPixelDimension != 0 && vCaptureDetails.OriginalWidth > vCaptureSettings.MaxPixelDimension && vCaptureDetails.OriginalHeight > vCaptureSettings.MaxPixelDimension;
-			if (vCaptureInstance.vCaptureTextureResizing)
+			vDirectXInstance.TextureResizing = vCaptureSettings.MaxPixelDimension != 0 && vCaptureDetails.OriginalWidth > vCaptureSettings.MaxPixelDimension && vCaptureDetails.OriginalHeight > vCaptureSettings.MaxPixelDimension;
+			if (vDirectXInstance.TextureResizing)
 			{
 				DOUBLE resizedWidth = 0.01;
 				DOUBLE resizedHeight = 0.01;
@@ -70,7 +70,7 @@ namespace
 			}
 			vCaptureDetails.WidthByteSize = vCaptureDetails.OutputWidth * vCaptureDetails.PixelByteSize;
 			vCaptureDetails.TotalByteSize = vCaptureDetails.OutputWidth * vCaptureDetails.OutputHeight * vCaptureDetails.PixelByteSize;
-			vCaptureInstance.vCaptureTextureMipLevels = 1 + log2(max(vCaptureDetails.OutputWidth, vCaptureDetails.OutputHeight));
+			vDirectXInstance.TextureMipLevels = 1 + log2(max(vCaptureDetails.OutputWidth, vCaptureDetails.OutputHeight));
 
 			//Return result
 			AVDebugWriteLine("Screen capture output, Width: " << vCaptureDetails.OutputWidth << " Height: " << vCaptureDetails.OutputHeight);

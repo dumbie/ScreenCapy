@@ -70,13 +70,14 @@ namespace
 			try
 			{
 				//Clear screen bytes cache
-				vCaptureInstance.vScreenBytesCache.clear();
+				vCaptureInstance.vCaptureDataScreenCache.ScreenBytes.clear();
 
 				//Update screen bytes cache
-				vCaptureInstance.vScreenBytesCache = GetScreenBytes(false);
+				vCaptureInstance.vCaptureDataScreenCache.Cached = true;
+				vCaptureInstance.vCaptureDataScreenCache.ScreenBytes = GetScreenBytes(false);
 
 				//Return screen bytes
-				return vCaptureInstance.vScreenBytesCache.data();
+				return vCaptureInstance.vCaptureDataScreenCache.ScreenBytes.data();
 			}
 			catch (...)
 			{

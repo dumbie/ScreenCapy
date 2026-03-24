@@ -96,7 +96,10 @@
     <CopyFileToFolders Include="Shaders\FilterShader.hlsl">
       <Filter>Shader files</Filter>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="Shaders\PixelShader.hlsl">
+    <CopyFileToFolders Include="Shaders\PixelShaderPass1.hlsl">
+      <Filter>Shader files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Shaders\PixelShaderPass2.hlsl">
       <Filter>Shader files</Filter>
     </CopyFileToFolders>
     <CopyFileToFolders Include="Shaders\VertexShader.hlsl">

@@ -61,29 +61,6 @@ namespace
 		}
 	}
 
-	CaptureResult TextureResetVariablesLoop()
-	{
-		try
-		{
-			//Textures
-			vCaptureInstance.iD3D11Texture2D0CpuRead.Release();
-			vCaptureInstance.iD3D11Texture2D0Screen.Release();
-
-			//Views
-			vDirectXInstance.iD3D11ShaderResourceView0.Release();
-
-			//AVDebugWriteLine("Reset loop Texture variables.");
-
-			//Return result
-			return { .Status = CaptureStatus::Success };
-		}
-		catch (...)
-		{
-			//Return result
-			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"TextureResetVariablesLoop failed") };
-		}
-	}
-
 	CaptureResult CaptureInstanceResetVariablesAll()
 	{
 		try
@@ -91,17 +68,13 @@ namespace
 			//Stop capture status loop
 			CaptureStatusLoopStop();
 
-			//Bytes
-			vCaptureInstance.vScreenBytesCache.clear();
-
-			//Textures
-			vCaptureInstance.iD3D11Texture2D0CpuRead.Release();
-			vCaptureInstance.iD3D11Texture2D0Screen.Release();
-			vCaptureInstance.iD3D11Texture2D0RenderTargetView.Release();
-
 			//Status
 			vCaptureInstance.vInstanceInitialized = false;
 			vCaptureInstance.vInstanceInitializing = false;
+
+			//Bytes
+			vCaptureInstance.vCaptureDataScreenCache.Cached = false;
+			vCaptureInstance.vCaptureDataScreenCache.ScreenBytes.clear();
 
 			AVDebugWriteLine("Reset all Capture instance variables.");
 
@@ -216,6 +189,30 @@ namespace
 		}
 	}
 
+	CaptureResult DirectXResetVariablesLoop()
+	{
+		try
+		{
+			//Textures
+			vDirectXInstance.iD3D11Texture2D0CpuRead.Release();
+			vDirectXInstance.iD3D11Texture2D0ScreenCapture.Release();
+
+			//Views
+			vDirectXInstance.iD3D11ShaderResourceView0Pass1.Release();
+			vDirectXInstance.iD3D11ShaderResourceView0Pass2.Release();
+
+			//AVDebugWriteLine("Reset loop DirectX variables.");
+
+			//Return result
+			return { .Status = CaptureStatus::Success };
+		}
+		catch (...)
+		{
+			//Return result
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"DirectXResetVariablesLoop failed") };
+		}
+	}
+
 	CaptureResult DirectXResetVariablesAll()
 	{
 		try
@@ -234,16 +231,26 @@ namespace
 
 			//Views
 			vDirectXInstance.iD3D11InputLayout0.Release();
-			vDirectXInstance.iD3D11RenderTargetView0.Release();
-			vDirectXInstance.iD3D11ShaderResourceView0.Release();
+			vDirectXInstance.iD3D11RenderTargetView0Pass1.Release();
+			vDirectXInstance.iD3D11RenderTargetView0Pass2.Release();
+			vDirectXInstance.iD3D11ShaderResourceView0Pass1.Release();
+			vDirectXInstance.iD3D11ShaderResourceView0Pass2.Release();
 
 			//Shaders
 			vDirectXInstance.iD3D11BufferVertex0.Release();
 			vDirectXInstance.iD3D11BufferPixel0.Release();
 			vDirectXInstance.iD3DBlobShaderVertex0.Release();
-			vDirectXInstance.iD3DBlobShaderPixel0.Release();
+			vDirectXInstance.iD3DBlobShaderPixel0Pass1.Release();
+			vDirectXInstance.iD3DBlobShaderPixel0Pass2.Release();
 			vDirectXInstance.iD3D11ShaderVertex0.Release();
-			vDirectXInstance.iD3D11ShaderPixel0.Release();
+			vDirectXInstance.iD3D11ShaderPixel0Pass1.Release();
+			vDirectXInstance.iD3D11ShaderPixel0Pass2.Release();
+
+			//Textures
+			vDirectXInstance.iD3D11Texture2D0CpuRead.Release();
+			vDirectXInstance.iD3D11Texture2D0ScreenCapture.Release();
+			vDirectXInstance.iD3D11Texture2D0RenderTargetViewPass1.Release();
+			vDirectXInstance.iD3D11Texture2D0RenderTargetViewPass2.Release();
 
 			AVDebugWriteLine("Reset all DirectX variables.");
 

@@ -13,9 +13,7 @@
 #pragma comment(lib, "avrt.lib")
 
 //Arnold Vink Code
-#include "..\..\ArnoldVinkCode\CPP\AVDebug.h"
-#include "..\..\ArnoldVinkCode\CPP\AVFinally.h"
-#include "..\..\ArnoldVinkCode\CPP\AVHighResDelay.h"
+#include "..\..\ArnoldVinkCode\CPP\AVPch.h"
 
 //General
 #include <atlbase.h>

@@ -10,7 +10,7 @@ namespace
 		AVFinally(
 			{
 				//Release resources
-				TextureResetVariablesLoop();
+				DirectXResetVariablesLoop();
 				MediaFoundationResetVariablesAll();
 
 				//Trigger capture event

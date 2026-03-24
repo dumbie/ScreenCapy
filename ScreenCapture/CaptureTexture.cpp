@@ -69,14 +69,14 @@ namespace
 			iD3DTexture2D0DescCpuRead.MiscFlags = 0;
 
 			//Create cpu texture
-			hResult = vDirectXInstance.iD3D11Device5->CreateTexture2D(&iD3DTexture2D0DescCpuRead, NULL, &vCaptureInstance.iD3D11Texture2D0CpuRead);
+			hResult = vDirectXInstance.iD3D11Device5->CreateTexture2D(&iD3DTexture2D0DescCpuRead, NULL, &vDirectXInstance.iD3D11Texture2D0CpuRead);
 			if (FAILED(hResult))
 			{
 				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"CreateTexture2D CpuRead failed") };
 			}
 
 			//Copy target to cpu texture
-			vDirectXInstance.iD3D11DeviceContext4->CopySubresourceRegion(vCaptureInstance.iD3D11Texture2D0CpuRead, 0, 0, 0, 0, textureTarget, 0, NULL);
+			vDirectXInstance.iD3D11DeviceContext4->CopySubresourceRegion(vDirectXInstance.iD3D11Texture2D0CpuRead, 0, 0, 0, 0, textureTarget, 0, NULL);
 
 			//Return result
 			return { .Status = CaptureStatus::Success };

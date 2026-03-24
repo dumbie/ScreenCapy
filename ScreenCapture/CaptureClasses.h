@@ -128,6 +128,9 @@ namespace
 	struct DirectXInstance
 	{
 		//Information
+		BOOL TextureResizing;
+		UINT TextureMipLevels;
+		DXGI_FORMAT iDxgiFormat;
 		DXGI_OUTPUT_DESC1 iDxgiOutputDescription1;
 
 		//Direct3D
@@ -144,16 +147,26 @@ namespace
 
 		//Views
 		CComPtr<ID3D11InputLayout> iD3D11InputLayout0;
-		CComPtr<ID3D11RenderTargetView> iD3D11RenderTargetView0;
-		CComPtr<ID3D11ShaderResourceView> iD3D11ShaderResourceView0;
+		CComPtr<ID3D11RenderTargetView> iD3D11RenderTargetView0Pass1;
+		CComPtr<ID3D11RenderTargetView> iD3D11RenderTargetView0Pass2;
+		CComPtr<ID3D11ShaderResourceView> iD3D11ShaderResourceView0Pass1;
+		CComPtr<ID3D11ShaderResourceView> iD3D11ShaderResourceView0Pass2;
 
 		//Shaders
 		CComPtr<ID3D11Buffer> iD3D11BufferVertex0;
 		CComPtr<ID3D11Buffer> iD3D11BufferPixel0;
 		CComPtr<ID3DBlob> iD3DBlobShaderVertex0;
-		CComPtr<ID3DBlob> iD3DBlobShaderPixel0;
+		CComPtr<ID3DBlob> iD3DBlobShaderPixel0Pass1;
+		CComPtr<ID3DBlob> iD3DBlobShaderPixel0Pass2;
 		CComPtr<ID3D11VertexShader> iD3D11ShaderVertex0;
-		CComPtr<ID3D11PixelShader> iD3D11ShaderPixel0;
+		CComPtr<ID3D11PixelShader> iD3D11ShaderPixel0Pass1;
+		CComPtr<ID3D11PixelShader> iD3D11ShaderPixel0Pass2;
+
+		//Textures
+		CComPtr<ID3D11Texture2D> iD3D11Texture2D0CpuRead;
+		CComPtr<ID3D11Texture2D> iD3D11Texture2D0ScreenCapture;
+		CComPtr<ID3D11Texture2D> iD3D11Texture2D0RenderTargetViewPass1;
+		CComPtr<ID3D11Texture2D> iD3D11Texture2D0RenderTargetViewPass2;
 	};
 
 	struct BitmapImageInstance
@@ -195,38 +208,10 @@ namespace
 		CComHeapPtr<WAVEFORMATEXTENSIBLE> iAudioWaveFormatExRender;
 	};
 
-	struct CaptureInstance
+	struct VertexVertice
 	{
-		//Status
-		BOOL vInstanceInitialized;
-		BOOL vInstanceInitializing;
-		BOOL vCaptureStatusLoopAllowed;
-		BOOL vCaptureStatusLoopFinished;
-		BOOL vCaptureTextureResizing;
-		UINT vCaptureTextureMipLevels;
-
-		//Information
-		DXGI_FORMAT vCaptureDxgiFormat;
-
-		//Bytes
-		std::vector<BYTE> vScreenBytesCache;
-
-		//Textures
-		CComPtr<ID3D11Texture2D> iD3D11Texture2D0CpuRead;
-		CComPtr<ID3D11Texture2D> iD3D11Texture2D0Screen;
-		CComPtr<ID3D11Texture2D> iD3D11Texture2D0RenderTargetView;
-	};
-
-	struct CaptureResult
-	{
-		//Status
-		CaptureStatus Status;
-
-		//Result Code
-		LONG ResultCode;
-
-		//Message
-		BSTR Message;
+		DirectX::XMFLOAT3 Position;
+		DirectX::XMFLOAT2 TexCoord;
 	};
 
 	struct CaptureDataScreen
@@ -249,9 +234,27 @@ namespace
 		std::vector<BYTE> AudioBytes;
 	};
 
-	struct VertexVertice
+	struct CaptureInstance
 	{
-		DirectX::XMFLOAT3 Position;
-		DirectX::XMFLOAT2 TexCoord;
+		//Status
+		BOOL vInstanceInitialized;
+		BOOL vInstanceInitializing;
+		BOOL vCaptureStatusLoopAllowed;
+		BOOL vCaptureStatusLoopFinished;
+
+		//Bytes
+		CaptureDataScreen vCaptureDataScreenCache;
+	};
+
+	struct CaptureResult
+	{
+		//Status
+		CaptureStatus Status;
+
+		//Result Code
+		LONG ResultCode;
+
+		//Message
+		BSTR Message;
 	};
 };
