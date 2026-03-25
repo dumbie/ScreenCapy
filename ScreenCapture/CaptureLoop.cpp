@@ -66,7 +66,7 @@ namespace
 					if (capResult.Status == CaptureStatus::Success)
 					{
 						//Write media bytes to sink
-						std::thread threadWriteSample(WriteMediaTexture2D, vDirectXInstance.iD3D11Texture2D0RenderTargetViewPass2, vCaptureDetails.TotalByteSize, false, vMediaFoundationInstance.vOutVideoStreamIndex, mediaTimeStart, mediaTimeDuration);
+						std::thread threadWriteSample(WriteMediaTexture2D, vDirectXInstance.PixelShaderMultiPass ? vDirectXInstance.iD3D11Texture2D0RenderTargetViewPass2 : vDirectXInstance.iD3D11Texture2D0RenderTargetViewPass1, vCaptureDetails.TotalByteSize, false, vMediaFoundationInstance.vOutVideoStreamIndex, mediaTimeStart, mediaTimeDuration);
 						threadWriteSample.detach();
 
 						//Delay screen capture

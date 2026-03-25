@@ -48,44 +48,49 @@ namespace
 		try
 		{
 			//Pixel shader (Pass 1)
-			//Create shader resource view
-			hResult = vDirectXInstance.iD3D11Device5->CreateShaderResourceView(textureTarget, NULL, &vDirectXInstance.iD3D11ShaderResourceView0Pass1);
-			if (FAILED(hResult))
 			{
-				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed creating shader resource view") };
+				//Create shader resource view
+				hResult = vDirectXInstance.iD3D11Device5->CreateShaderResourceView(textureTarget, NULL, &vDirectXInstance.iD3D11ShaderResourceView0Pass1);
+				if (FAILED(hResult))
+				{
+					return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed creating shader resource view") };
+				}
+
+				//Set render target view
+				vDirectXInstance.iD3D11DeviceContext4->OMSetRenderTargets(1, &vDirectXInstance.iD3D11RenderTargetView0Pass1, NULL);
+
+				//Set shader resource view
+				vDirectXInstance.iD3D11DeviceContext4->PSSetShaderResources(0, 1, &vDirectXInstance.iD3D11ShaderResourceView0Pass1);
+
+				//Set pixel shader pass
+				vDirectXInstance.iD3D11DeviceContext4->PSSetShader(vDirectXInstance.iD3D11ShaderPixel0Pass1, NULL, 0);
+
+				//Draw texture with shaders
+				vDirectXInstance.iD3D11DeviceContext4->Draw(vertexVerticesCount, 0);
 			}
-
-			//Set render target view
-			vDirectXInstance.iD3D11DeviceContext4->OMSetRenderTargets(1, &vDirectXInstance.iD3D11RenderTargetView0Pass1, NULL);
-
-			//Set shader resource view
-			vDirectXInstance.iD3D11DeviceContext4->PSSetShaderResources(0, 1, &vDirectXInstance.iD3D11ShaderResourceView0Pass1);
-
-			//Set pixel shader pass
-			vDirectXInstance.iD3D11DeviceContext4->PSSetShader(vDirectXInstance.iD3D11ShaderPixel0Pass1, NULL, 0);
-
-			//Draw texture with shaders
-			vDirectXInstance.iD3D11DeviceContext4->Draw(vertexVerticesCount, 0);
 
 			//Pixel shader (Pass 2)
-			//Create shader resource view
-			hResult = vDirectXInstance.iD3D11Device5->CreateShaderResourceView(vDirectXInstance.iD3D11Texture2D0RenderTargetViewPass1, NULL, &vDirectXInstance.iD3D11ShaderResourceView0Pass2);
-			if (FAILED(hResult))
+			if (vDirectXInstance.PixelShaderMultiPass)
 			{
-				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed creating shader resource view") };
+				//Create shader resource view
+				hResult = vDirectXInstance.iD3D11Device5->CreateShaderResourceView(vDirectXInstance.iD3D11Texture2D0RenderTargetViewPass1, NULL, &vDirectXInstance.iD3D11ShaderResourceView0Pass2);
+				if (FAILED(hResult))
+				{
+					return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed creating shader resource view") };
+				}
+
+				//Set render target view
+				vDirectXInstance.iD3D11DeviceContext4->OMSetRenderTargets(1, &vDirectXInstance.iD3D11RenderTargetView0Pass2, NULL);
+
+				//Set shader resource view
+				vDirectXInstance.iD3D11DeviceContext4->PSSetShaderResources(0, 1, &vDirectXInstance.iD3D11ShaderResourceView0Pass2);
+
+				//Set pixel shader pass
+				vDirectXInstance.iD3D11DeviceContext4->PSSetShader(vDirectXInstance.iD3D11ShaderPixel0Pass2, NULL, 0);
+
+				//Draw texture with shaders
+				vDirectXInstance.iD3D11DeviceContext4->Draw(vertexVerticesCount, 0);
 			}
-
-			//Set render target view
-			vDirectXInstance.iD3D11DeviceContext4->OMSetRenderTargets(1, &vDirectXInstance.iD3D11RenderTargetView0Pass2, NULL);
-
-			//Set shader resource view
-			vDirectXInstance.iD3D11DeviceContext4->PSSetShaderResources(0, 1, &vDirectXInstance.iD3D11ShaderResourceView0Pass2);
-
-			//Set pixel shader pass
-			vDirectXInstance.iD3D11DeviceContext4->PSSetShader(vDirectXInstance.iD3D11ShaderPixel0Pass2, NULL, 0);
-
-			//Draw texture with shaders
-			vDirectXInstance.iD3D11DeviceContext4->Draw(vertexVerticesCount, 0);
 
 			//Return result
 			return { .Status = CaptureStatus::Success };

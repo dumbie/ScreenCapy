@@ -471,6 +471,9 @@ namespace
 			shaderVariables.Gamma = vCaptureSettings.Gamma;
 			shaderVariables.Blur = vCaptureSettings.Blur;
 
+			//Check if pixel shader multi pass is needed
+			vDirectXInstance.PixelShaderMultiPass = vCaptureSettings.Blur != 0.0F;
+
 			//Create buffer description
 			D3D11_BUFFER_DESC bufferDescription{};
 			bufferDescription.ByteWidth = sizeof(shaderVariables);

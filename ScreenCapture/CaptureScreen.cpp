@@ -73,7 +73,7 @@ namespace
 			}
 
 			//Convert to cpu read texture
-			capResult = Texture2DConvertToCpuRead(vDirectXInstance.iD3D11Texture2D0RenderTargetViewPass2);
+			capResult = Texture2DConvertToCpuRead(vDirectXInstance.PixelShaderMultiPass ? vDirectXInstance.iD3D11Texture2D0RenderTargetViewPass2 : vDirectXInstance.iD3D11Texture2D0RenderTargetViewPass1);
 			if (capResult.Status != CaptureStatus::Success)
 			{
 				return {};

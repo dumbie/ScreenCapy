@@ -128,6 +128,7 @@ namespace
 	struct DirectXInstance
 	{
 		//Information
+		BOOL PixelShaderMultiPass;
 		BOOL TextureResizing;
 		UINT TextureMipLevels;
 		DXGI_FORMAT iDxgiFormat;
