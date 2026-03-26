@@ -82,26 +82,29 @@ float4 AdjustHDRtoSDR(float4 color)
         return color;
     }
 
-	//Adjust SDR white level and HDR paper white
+    //Adjust SDR white level and HDR paper white
     color = AdjustHDRWhites(color);
 
-	//Adjust HDR maximum nits
+    //Adjust HDR maximum nits
     color = AdjustHDRMaximumNits(color);
 
-	//Convert Linear to SRGB
+    //Convert Linear to SRGB
     color = ColorLinearToSrgb(color);
 
     return color;
 }
 
-float4 AdjustTextureBlur(float4 color, float2 texCoord, float2 texSize)
+float4 AdjustTextureBlur(float4 color, float2 texCoord, float2 texSize, float2 texDdxy)
 {
-    if (Blur < 2.0F)
+    if (Blur == 0.0F)
     {
         return color;
     }
-    //Blur gaussian
-    return TextureBlurGaussian(_texture2D, _samplerState, color, texCoord, texSize, Blur);
+    //Blur
+    //return TextureBlurBoxSingle(_texture2D, _samplerState, color, texCoord, texDdxy, Blur);
+    //return TextureBlurBoxHorizontal(_texture2D, _samplerState, color, texCoord, texDdxy, Blur);
+    return TextureBlurCosineHorizontal(_texture2D, _samplerState, color, texCoord, texDdxy, Blur);
+    //return TextureBlurGaussianHorizontal(_texture2D, _samplerState, color, texCoord, texDdxy, Blur);
 }
 
 float4 AdjustTextureFilter(float4 color, float2 texCoord, float2 texDdxy, float2 texSize)
@@ -133,9 +136,9 @@ float4 AdjustColorChannels(float4 color)
     float4x4 matrix4x4 =
     {
         RedChannel, 0.0, 0.0, 0.0,
-		0.0, GreenChannel, 0.0, 0.0,
-		0.0, 0.0, BlueChannel, 0.0,
-		0.0, 0.0, 0.0, 1.0F
+        0.0, GreenChannel, 0.0, 0.0,
+        0.0, 0.0, BlueChannel, 0.0,
+        0.0, 0.0, 0.0, 1.0F
     };
     return mul(matrix4x4, color);
 }
@@ -149,9 +152,9 @@ float4 AdjustBrightness(float4 color)
     float4x4 matrix4x4 =
     {
         Brightness, 0.0, 0.0, 0.0,
-		0.0, Brightness, 0.0, 0.0,
-		0.0, 0.0, Brightness, 0.0,
-		0.0, 0.0, 0.0, 1.0F
+        0.0, Brightness, 0.0, 0.0,
+        0.0, 0.0, Brightness, 0.0,
+        0.0, 0.0, 0.0, 1.0F
     };
     return mul(matrix4x4, color);
 }
@@ -165,9 +168,9 @@ float4 AdjustContrast(float4 color)
     float4x4 matrix4x4 =
     {
         1.0F, 0.0, 0.0, Contrast,
-		0.0, 1.0F, 0.0, Contrast,
-		0.0, 0.0, 1.0F, Contrast,
-		0.0, 0.0, 0.0, 1.0F
+        0.0, 1.0F, 0.0, Contrast,
+        0.0, 0.0, 1.0F, Contrast,
+        0.0, 0.0, 0.0, 1.0F
     };
     return mul(matrix4x4, color);
 }
@@ -184,46 +187,46 @@ float4 AdjustGamma(float4 color)
 
 float4 main(PS_INPUT input) : SV_TARGET
 {
-	//Get texture colors
+    //Get texture colors
     float4 color = _texture2D.Sample(_samplerState, input.TexCoord);
 
-	//Get original texture alpha
+    //Get original texture alpha
     float colorAlpha = color.a;
 
-	//Get texture size
+    //Get texture size
     float2 textureSize = float2(0.0F, 0.0F);
     _texture2D.GetDimensions(textureSize.x, textureSize.y);
 
-	//Get texture ddxy
+    //Get texture ddxy
     float2 textureDdxy = float2(ddx(input.TexCoord.x), ddy(input.TexCoord.y));
 
-	//Adjust texture filter
+    //Adjust texture filter
     color = AdjustTextureFilter(color, input.TexCoord, textureDdxy, textureSize);
 
-	//Adjust texture blur
-    color = AdjustTextureBlur(color, input.TexCoord, textureSize);
+    //Adjust texture blur
+    color = AdjustTextureBlur(color, input.TexCoord, textureSize, textureDdxy);
 
-	//Adjust HDR to SDR
+    //Adjust HDR to SDR
     color = AdjustHDRtoSDR(color);
 
-	//Adjust saturation
+    //Adjust saturation
     color = AdjustSaturation(color);
 
-	//Adjust color channels
+    //Adjust color channels
     color = AdjustColorChannels(color);
 
-	//Adjust brightness
+    //Adjust brightness
     color = AdjustBrightness(color);
 
-	//Adjust contrast
+    //Adjust contrast
     color = AdjustContrast(color);
 
-	//Adjust gamma
+    //Adjust gamma
     color = AdjustGamma(color);
 
-	//Set original texture alpha
+    //Set original texture alpha
     color.a = colorAlpha;
 
-	//Return updated colors
+    //Return updated colors
     return color;
 }
