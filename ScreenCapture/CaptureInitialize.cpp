@@ -470,6 +470,7 @@ namespace
 			shaderVariables.Contrast = vCaptureSettings.Contrast;
 			shaderVariables.Gamma = vCaptureSettings.Gamma;
 			shaderVariables.Blur = vCaptureSettings.Blur;
+			shaderVariables.Sharpness = vCaptureSettings.Sharpness;
 
 			//Check if pixel shader multi pass is needed
 			vDirectXInstance.PixelShaderMultiPass = vCaptureSettings.Blur != 0.0F;

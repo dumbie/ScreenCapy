@@ -74,6 +74,7 @@ namespace ScreenCaptureImport
         public float Contrast { get; set; } = 0.0F;
         public float Gamma { get; set; } = 1.0F;
         public float Blur { get; set; } = 0.0F;
+        public float Sharpness { get; set; } = 0.0F;
     }
 
     public struct CaptureDetails

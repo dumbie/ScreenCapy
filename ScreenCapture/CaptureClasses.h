@@ -73,6 +73,7 @@ namespace
 		FLOAT Contrast = 0.0F;
 		FLOAT Gamma = 1.0F;
 		FLOAT Blur = 0.0F;
+		FLOAT Sharpness = 0.0F;
 	};
 
 	struct CaptureDetails
@@ -105,9 +106,9 @@ namespace
 		FLOAT Contrast;
 		FLOAT Gamma;
 		FLOAT Blur;
+		FLOAT Sharpness;
 		FLOAT Unused1;
 		FLOAT Unused2;
-		FLOAT Unused3;
 	};
 
 	struct WgcInstance

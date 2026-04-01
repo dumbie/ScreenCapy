@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using static ArnoldVinkCode.AVInteropDll;
+using static ArnoldVinkCode.AVProcess;
 using static ArnoldVinkCode.AVStartup;
 
 namespace ScreenCapture
@@ -11,7 +11,7 @@ namespace ScreenCapture
             try
             {
                 //Setup application defaults
-                SetupDefaults(ProcessPriorityClasses.NORMAL_PRIORITY_CLASS, false);
+                SetupDefaults(ProcessPriorityClasses.Normal, false);
             }
             catch { }
         }

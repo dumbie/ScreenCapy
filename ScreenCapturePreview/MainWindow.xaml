@@ -7,8 +7,8 @@
         mc:Ignorable="d"
         RenderOptions.BitmapScalingMode="HighQuality"
         Title="Screen Capture Preview"
-        Height="750"
-        Width="1280">
+        Height="770"
+        Width="1315">
     <Grid Background="#444">
         <Image Name="image_DebugPreview"/>
         <TextBlock Name="textblock_FrameCount" Margin="5" Foreground="White" FontSize="20"/>
@@ -46,8 +46,11 @@
                 <TextBlock x:Name="text_Gamma" Tag="Gamma:" Foreground="White" Margin="0,5,0,0"/>
                 <Slider x:Name="slider_Gamma" Value="1.00" Minimum="0.00" Maximum="3.00" ValueChanged="slider_ValueChanged"/>
 
+                <TextBlock x:Name="text_Sharpness" Text="Sharpness: 0,0000" Tag="Sharpness:" Foreground="White" Margin="0,5,0,0"/>
+                <Slider x:Name="slider_Sharpness" Value="0.00" Minimum="0.00" Maximum="100.00" ValueChanged="slider_ValueChanged"/>
+
                 <TextBlock x:Name="text_Blur" Text="Blur: 0,0000" Tag="Blur:" Foreground="White" Margin="0,5,0,0"/>
-                <Slider x:Name="slider_Blur" Value="0.00" Minimum="0.00" Maximum="80.00" ValueChanged="slider_ValueChanged"/>
+                <Slider x:Name="slider_Blur" Value="0.00" Minimum="0.00" Maximum="200.00" ValueChanged="slider_ValueChanged"/>
 
                 <TextBlock x:Name="text_UpdateRate" Text="Update rate: 40ms" Tag="Update rate:" Foreground="White" Margin="0,5,0,0"/>
                 <Slider x:Name="slider_UpdateRate" Value="40" Minimum="0" Maximum="250" ValueChanged="slider_ValueChanged"/>
