@@ -17,10 +17,14 @@ namespace
 				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"MFCreateMediaType video out failed") };
 			}
 
-			//Set video format
+			//Check and set video save format
 			GUID videoFormat{};
 			if (vMediaSettings.VideoFormat == H264)
 			{
+				if (vCaptureDetails.HDREnabled && !vCaptureDetails.HDRtoSDR)
+				{
+					return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"Video format does not support HDR") };
+				}
 				videoFormat = MFVideoFormat_H264;
 				AVDebugWriteLine("Set video output format to H264.");
 			}
