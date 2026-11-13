@@ -137,7 +137,7 @@ namespace
 			//}
 
 			//Set multithread protection
-			hResult = vDirectXInstance.iD3D11Multithread0->SetMultithreadProtected(true);
+			hResult = vDirectXInstance.iD3D11Multithread0->SetMultithreadProtected(TRUE);
 			if (FAILED(hResult))
 			{
 				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"SetMultithreadProtected failed") };
@@ -187,7 +187,7 @@ namespace
 			iD3DSamplerDescription.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
 			iD3DSamplerDescription.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
 			iD3DSamplerDescription.MipLODBias = 0.0F;
-			iD3DSamplerDescription.MaxAnisotropy = 0;
+			iD3DSamplerDescription.MaxAnisotropy = D3D11_MIN_MAXANISOTROPY;
 			iD3DSamplerDescription.ComparisonFunc = D3D11_COMPARISON_NEVER;
 			iD3DSamplerDescription.BorderColor[0] = 1.0F;
 			iD3DSamplerDescription.BorderColor[1] = 1.0F;
@@ -455,12 +455,15 @@ namespace
 	{
 		try
 		{
+			//Check if pixel shader multi pass is needed
+			vDirectXInstance.PixelShaderMultiPass = vCaptureSettings.Blur != 0.0F;
+
 			//Create shader variables
 			ShaderVariables shaderVariables{};
-			shaderVariables.TextureFilterUse = vDirectXInstance.TextureResizing;
+			shaderVariables.MultiPass = vDirectXInstance.PixelShaderMultiPass;
 			shaderVariables.HDRtoSDR = vCaptureDetails.HDRtoSDR;
 			shaderVariables.HDRPaperWhite = vCaptureSettings.HDRPaperWhite;
-			shaderVariables.HDRMaximumNits = vCaptureSettings.HDRMaximumNits;
+			shaderVariables.HDRBrightness = vCaptureSettings.HDRBrightness;
 			shaderVariables.SDRWhiteLevel = vCaptureDetails.SDRWhiteLevel;
 			shaderVariables.Saturation = vCaptureSettings.Saturation;
 			shaderVariables.RedChannel = vCaptureSettings.RedChannel;
@@ -472,8 +475,15 @@ namespace
 			shaderVariables.Blur = vCaptureSettings.Blur;
 			shaderVariables.Sharpness = vCaptureSettings.Sharpness;
 
-			//Check if pixel shader multi pass is needed
-			vDirectXInstance.PixelShaderMultiPass = vCaptureSettings.Blur != 0.0F;
+			//Set texture filter type
+			if (vDirectXInstance.TextureResizing)
+			{
+				shaderVariables.TextureFilter = vCaptureSettings.TextureFilter;
+			}
+			else
+			{
+				shaderVariables.TextureFilter = TextureFilters::Nearest;
+			}
 
 			//Create buffer description
 			D3D11_BUFFER_DESC bufferDescription{};

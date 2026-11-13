@@ -1,81 +1,49 @@
 //Box filter
+float4 TextureFilterBox(Texture2D _texture2D, SamplerState _samplerState, float2 texCoord, float2 texSize)
+{
+    float2 pixel = texCoord * texSize - 0.5F;
+    float2 floorpx = floor(pixel);
+    float2 fracpx = frac(pixel);
 
-//Bicubic filter
+    //Set positions
+    float2 posTopLeft = (floorpx + float2(0.0F, 0.0F) + 0.5F) / texSize;
+    float2 posTopRight = (floorpx + float2(1.0F, 0.0F) + 0.5F) / texSize;
+    float2 posBottomLeft = (floorpx + float2(0.0F, 1.0F) + 0.5F) / texSize;
+    float2 posBottomRight = (floorpx + float2(1.0F, 1.0F) + 0.5F) / texSize;
 
-//Catmull-Rom filter
+    //Sample texture
+    float4 topLeft = _texture2D.Sample(_samplerState, posTopLeft);
+    float4 topRight = _texture2D.Sample(_samplerState, posTopRight);
+    float4 bottomLeft = _texture2D.Sample(_samplerState, posBottomLeft);
+    float4 bottomRight = _texture2D.Sample(_samplerState, posBottomRight);
 
-//Mitchell-Netravali filter
-
-//Blackman-Harris filter
-
-//Spline filter
-
-//Hermite filter
-
-//Hanning filter
-
-//Hamming filter
-
-//Lanczos filter
+    //Average
+    return (topLeft + topRight + bottomLeft + bottomRight) / 4.0F;
+}
 
 //Bilinear filter
-
-//Multisample anti-aliasing filter
-float4 TextureFilterMsaa(Texture2D _texture2D, SamplerState _samplerState, float2 texCoord, float2 texDdxy)
+float4 TextureFilterBilinear(Texture2D _texture2D, SamplerState _samplerState, float2 texCoord, float2 texSize)
 {
-    //float2 dir0 = texDdxy * 0.0000F;
-    float2 dir1 = texDdxy * 0.0625F;
-    //float2 dir2 = texDdxy * 0.1250F;
-    float2 dir3 = texDdxy * 0.1875F;
-    //float2 dir4 = texDdxy * 0.2500F;
-    float2 dir5 = texDdxy * 0.3125F;
-    //float2 dir6 = texDdxy * 0.3750F;
-    float2 dir7 = texDdxy * 0.4375F;
-    //float2 dir8 = texDdxy * 0.5000F;
+    float2 pixel = texCoord * texSize - 0.5F;
+    float2 floorpx = floor(pixel);
+    float2 fracpx = frac(pixel);
 
-    //2x
-    //int sampleCount = 3;
-    //color += _texture2D.Sample(_samplerState, texCoord + float2(dir4.x, dir4.y));
-    //color += _texture2D.Sample(_samplerState, texCoord + float2(-dir4.x, -dir4.y));
-    //return color / sampleCount;
+    //Set positions
+    float2 posTopLeft = (floorpx + float2(0.0F, 0.0F) + 0.5F) / texSize;
+    float2 posTopRight = (floorpx + float2(1.0F, 0.0F) + 0.5F) / texSize;
+    float2 posBottomLeft = (floorpx + float2(0.0F, 1.0F) + 0.5F) / texSize;
+    float2 posBottomRight = (floorpx + float2(1.0F, 1.0F) + 0.5F) / texSize;
 
-	//4x
-    //int sampleCount = 5;
-    //color += _texture2D.Sample(_samplerState, texCoord + float2(-dir2.x, -dir6.y));
-    //color += _texture2D.Sample(_samplerState, texCoord + float2(dir6.x, -dir2.y));
-    //color += _texture2D.Sample(_samplerState, texCoord + float2(-dir6.x, dir2.y));
-    //color += _texture2D.Sample(_samplerState, texCoord + float2(dir2.x, dir6.y));
-    //return color / sampleCount;
+    //Sample texture
+    float4 topLeft = _texture2D.Sample(_samplerState, posTopLeft);
+    float4 topRight = _texture2D.Sample(_samplerState, posTopRight);
+    float4 bottomLeft = _texture2D.Sample(_samplerState, posBottomLeft);
+    float4 bottomRight = _texture2D.Sample(_samplerState, posBottomRight);
 
-	//8x
-    int sampleCount = 8;
-    float4 color = _texture2D.Sample(_samplerState, texCoord + float2(dir1.x, -dir3.y));
-    color += _texture2D.Sample(_samplerState, texCoord + float2(-dir1.x, dir3.y));
-    color += _texture2D.Sample(_samplerState, texCoord + float2(dir5.x, dir1.y));
-    color += _texture2D.Sample(_samplerState, texCoord + float2(-dir3.x, -dir5.y));
-    color += _texture2D.Sample(_samplerState, texCoord + float2(-dir5.x, dir5.y));
-    color += _texture2D.Sample(_samplerState, texCoord + float2(-dir7.x, -dir1.y));
-    color += _texture2D.Sample(_samplerState, texCoord + float2(dir3.x, dir7.y));
-    color += _texture2D.Sample(_samplerState, texCoord + float2(dir7.x, -dir7.y));
-    return color / sampleCount;
+    //Horizontal interpolation
+    float4 combinedTop = lerp(topLeft, topRight, fracpx.x);
+    float4 combinedBottom = lerp(bottomLeft, bottomRight, fracpx.x);
 
-	//16x
-    //int sampleCount = 17;
-    //color += _texture2D.Sample(_samplerState, texCoord + float2(dir1.x, dir1.y));
-    //color += _texture2D.Sample(_samplerState, texCoord + float2(-dir1.x, -dir3.y));
-    //color += _texture2D.Sample(_samplerState, texCoord + float2(-dir3.x, dir2.y));
-    //color += _texture2D.Sample(_samplerState, texCoord + float2(dir4.x, -dir1.y));
-    //color += _texture2D.Sample(_samplerState, texCoord + float2(-dir5.x, -dir2.y));
-    //color += _texture2D.Sample(_samplerState, texCoord + float2(dir2.x, dir5.y));
-    //color += _texture2D.Sample(_samplerState, texCoord + float2(dir5.x, dir3.y));
-    //color += _texture2D.Sample(_samplerState, texCoord + float2(dir3.x, -dir5.y));
-    //color += _texture2D.Sample(_samplerState, texCoord + float2(-dir2.x, dir6.y));
-    //color += _texture2D.Sample(_samplerState, texCoord + float2(dir0.x, -dir7.y));
-    //color += _texture2D.Sample(_samplerState, texCoord + float2(-dir4.x, -dir6.y));
-    //color += _texture2D.Sample(_samplerState, texCoord + float2(-dir6.x, dir4.y));
-    //color += _texture2D.Sample(_samplerState, texCoord + float2(-dir8.x, dir0.y));
-    //color += _texture2D.Sample(_samplerState, texCoord + float2(dir7.x, -dir4.y));
-    //color += _texture2D.Sample(_samplerState, texCoord + float2(dir6.x, dir7.y));
-    //color += _texture2D.Sample(_samplerState, texCoord + float2(-dir7.x, -dir8.y));
-    //return color / sampleCount;
+    //Vertical interpolation
+    return lerp(combinedTop, combinedBottom, fracpx.y);
 }

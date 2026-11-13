@@ -1,14 +1,15 @@
 #include "BlurShader.hlsl"
-#include "FilterShader.hlsl"
+#include "ColorConvertShader.hlsl"
 
 Texture2D _texture2D : register(t0);
 SamplerState _samplerState : register(s0);
 cbuffer _shaderVariables : register(b0)
 {
-    bool TextureFilterUse;
+    int TextureFilter;
+    bool MultiPass;
     bool HDRtoSDR;
     float HDRPaperWhite;
-    float HDRMaximumNits;
+    float HDRBrightness;
     float SDRWhiteLevel;
     float Saturation;
     float RedChannel;
@@ -18,27 +19,14 @@ cbuffer _shaderVariables : register(b0)
     float Contrast;
     float Gamma;
     float Blur;
+    float Sharpness;
     float Unused1;
-    float Unused2;
-    float Unused3;
 };
 
 struct PS_INPUT
 {
     float4 Position : SV_POSITION;
     float2 TexCoord : TEXCOORD;
-};
-
-float4 AdjustTextureBlur(float4 color, float2 texCoord, float2 texSize, float2 texDdxy)
-{
-    if (Blur == 0.0F)
-    {
-        return color;
-    }
-    //Blur
-    //return TextureBlurBoxVertical(_texture2D, _samplerState, color, texCoord, texDdxy, Blur);
-    return TextureBlurCosineVertical(_texture2D, _samplerState, color, texCoord, texDdxy, Blur);
-    //return TextureBlurGaussianVertical(_texture2D, _samplerState, color, texCoord, texDdxy, Blur);
 };
 
 float4 main(PS_INPUT input) : SV_TARGET
@@ -54,7 +42,16 @@ float4 main(PS_INPUT input) : SV_TARGET
     float2 textureDdxy = float2(ddx(input.TexCoord.x), ddy(input.TexCoord.y));
 
     //Adjust texture blur
-    color = AdjustTextureBlur(color, input.TexCoord, textureSize, textureDdxy);
+    if (Blur != 0.0F)
+    {
+        color = TextureBlurGaussianVertical(_texture2D, _samplerState, color, input.TexCoord, textureDdxy, Blur);
+    }
+
+    //Convert HDR to SDR
+    if (MultiPass && HDRtoSDR)
+    {
+        color.rgb = ColorHDRtoSDR(color, SDRWhiteLevel, HDRPaperWhite, HDRBrightness);
+    }
 
     //Return color
     return color;

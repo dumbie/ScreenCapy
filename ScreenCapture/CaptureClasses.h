@@ -41,6 +41,12 @@ namespace
 		FLAC = 2
 	};
 
+	enum TextureFilters
+	{
+		Nearest = 0,
+		Bilinear = 1
+	};
+
 	//Structures
 	struct MediaSettings
 	{
@@ -64,7 +70,7 @@ namespace
 		BOOL DrawMouseCursor = true;
 		BOOL HDRtoSDR = false;
 		FLOAT HDRPaperWhite = 80.0F;
-		FLOAT HDRMaximumNits = 1000.0F;
+		FLOAT HDRBrightness = 2.0F;
 		FLOAT Saturation = 1.0F;
 		FLOAT RedChannel = 1.0F;
 		FLOAT GreenChannel = 1.0F;
@@ -74,6 +80,7 @@ namespace
 		FLOAT Gamma = 1.0F;
 		FLOAT Blur = 0.0F;
 		FLOAT Sharpness = 0.0F;
+		TextureFilters TextureFilter = TextureFilters::Bilinear;
 	};
 
 	struct CaptureDetails
@@ -93,10 +100,11 @@ namespace
 
 	struct ShaderVariables
 	{
-		BOOL TextureFilterUse;
+		int TextureFilter;
+		BOOL MultiPass;
 		BOOL HDRtoSDR;
 		FLOAT HDRPaperWhite;
-		FLOAT HDRMaximumNits;
+		FLOAT HDRBrightness;
 		FLOAT SDRWhiteLevel;
 		FLOAT Saturation;
 		FLOAT RedChannel;
@@ -108,7 +116,6 @@ namespace
 		FLOAT Blur;
 		FLOAT Sharpness;
 		FLOAT Unused1;
-		FLOAT Unused2;
 	};
 
 	struct WgcInstance

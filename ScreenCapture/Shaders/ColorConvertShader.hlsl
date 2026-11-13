@@ -1,16 +1,16 @@
 float3 ColorSrgbToLinear(float3 color)
 {
-    float3 sRGB = color.rgb;
-    return sRGB * (sRGB * (sRGB * 0.305306011 + 0.682171111) + 0.012522878);
+    float3 colorRGB = color.rgb;
+    return colorRGB * (colorRGB * (colorRGB * 0.305306011F + 0.682171111F) + 0.012522878F);
 }
 
 float3 ColorLinearToSrgb(float3 color)
 {
-    float3 RGB = color.rgb;
-    float3 S1 = sqrt(RGB);
+    float3 colorRGB = color.rgb;
+    float3 S1 = sqrt(colorRGB);
     float3 S2 = sqrt(S1);
     float3 S3 = sqrt(S2);
-    return 0.662002687 * S1 + 0.684122060 * S2 - 0.323583601 * S3 - 0.0225411470 * RGB;
+    return 0.662002687F * S1 + 0.684122060F * S2 - 0.323583601F * S3 - 0.0225411470F * colorRGB;
 }
 
 float ColorLinearToST2084(float color)
@@ -40,7 +40,7 @@ float3 ColorHDRtoSDR(float4 color, float sdrWhiteLevel, float hdrPaperWhite, flo
     colorRGB = lerp(luminance, colorRGB, 0.98F);
 
     //Adjust HDR brightness
-    colorRGB /= 1.0F + (luminance / (hdrBrightness / 1000.0F));
+    colorRGB /= 1.0F + (luminance / hdrBrightness);
 
     //Convert Linear to SRGB
     colorRGB = ColorLinearToSrgb(colorRGB);
