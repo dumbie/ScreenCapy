@@ -1,4 +1,5 @@
 #pragma once
+#include "pch.h"
 #include "CaptureVariables.h"
 
 namespace
@@ -55,6 +56,36 @@ namespace
 		catch (...)
 		{
 			AVDebugWriteLine("Failed to get monitor path info.");
+		}
+		return false;
+	}
+
+	BOOL GetMonitorAdvancedColorEnabled(HMONITOR hMonitor)
+	{
+		try
+		{
+			DISPLAYCONFIG_PATH_INFO pathInfo{};
+			if (!GetMonitorPathInfo(hMonitor, &pathInfo))
+			{
+				return false;
+			}
+
+			DISPLAYCONFIG_GET_ADVANCED_COLOR_INFO colorInfo{};
+			colorInfo.header.size = sizeof(colorInfo);
+			colorInfo.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_ADVANCED_COLOR_INFO;
+			colorInfo.header.adapterId = pathInfo.targetInfo.adapterId;
+			colorInfo.header.id = pathInfo.targetInfo.id;
+			hResult = DisplayConfigGetDeviceInfo(&colorInfo.header);
+			if (FAILED(hResult))
+			{
+				return false;
+			}
+
+			return colorInfo.advancedColorEnabled != 0;
+		}
+		catch (...)
+		{
+			AVDebugWriteLine("Failed to get monitor advanced color information.");
 		}
 		return false;
 	}
