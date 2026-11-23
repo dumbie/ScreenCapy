@@ -1,4 +1,5 @@
 #pragma once
+#include "pch.h"
 #include "CaptureVariables.h"
 #include "CaptureScreen.cpp"
 #include "CaptureAudio.cpp"
@@ -65,9 +66,22 @@ namespace
 					capResult = UpdateScreenTexture();
 					if (capResult.Status == CaptureStatus::Success)
 					{
-						//Write media bytes to sink
-						std::thread threadWriteSample(WriteMediaTexture2D, vDirectXInstance.PixelShaderMultiPass ? vDirectXInstance.iD3D11Texture2D0RenderTargetViewPass2 : vDirectXInstance.iD3D11Texture2D0RenderTargetViewPass1, vCaptureDetails.TotalByteSize, false, vMediaFoundationInstance.vOutVideoStreamIndex, mediaTimeStart, mediaTimeDuration);
-						threadWriteSample.detach();
+						//Fix DXGI_FORMAT_R16G16_UNORM format does not support DXGI manager Zero Copy to DXGI_FORMAT_P010
+						if (vCaptureDetails.MediaTextureFormat == DXGI_FORMAT_P010)
+						{
+							//Get screen bytes
+							std::vector<BYTE> screenBytes = GetScreenBytes(false, false);
+
+							//Write media bytes to sink
+							std::thread threadWriteSample(WriteMediaDataBytes, screenBytes, true, false, vMediaFoundationInstance.vOutVideoStreamIndex, mediaTimeStart, mediaTimeDuration);
+							threadWriteSample.detach();
+						}
+						else
+						{
+							//Write media bytes to sink
+							std::thread threadWriteSample(WriteMediaTexture2D, vDirectXInstance.iD3D11Texture2D0RenderTargetViewPassOut, vCaptureDetails.MediaTotalByteSize, false, vMediaFoundationInstance.vOutVideoStreamIndex, mediaTimeStart, mediaTimeDuration);
+							threadWriteSample.detach();
+						}
 
 						//Delay screen capture
 						AVHighResDelay(mediaTimeDuration / vReferenceTimeToMilliseconds);
@@ -93,7 +107,7 @@ namespace
 		try
 		{
 			//Calculate media duration time
-			ULONGLONG mediaTimeDuration = vMediaSettings.AudioSampleRate / 100;
+			ULONGLONG mediaTimeDuration = vReferenceTimeToSeconds / vMediaSettings.AudioSampleRate;
 			AVDebugWriteLine("Audio frame duration: " << mediaTimeDuration);
 
 			//Write media in loop while allowed

@@ -1,4 +1,5 @@
 #pragma once
+#include "pch.h"
 #include "CaptureVariables.h"
 #include "CaptureReset.cpp"
 #include "CaptureDetails.cpp"
@@ -122,19 +123,19 @@ namespace
 				return capResult;
 			}
 
-			////Set maximum queue back buffer frames
-			//hResult = vDirectXInstance.iDxgiDevice4->SetMaximumFrameLatency(16);
-			//if (FAILED(hResult))
-			//{
-			//	return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"SetMaximumFrameLatency failed") };
-			//}
+			//Set maximum queue back buffer frames
+			hResult = vDirectXInstance.iDxgiDevice4->SetMaximumFrameLatency(16);
+			if (FAILED(hResult))
+			{
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"SetMaximumFrameLatency failed") };
+			}
 
-			////Set gpu thread scheduler priority
-			//hResult = vDirectXInstance.iDxgiDevice4->SetGPUThreadPriority(0);
-			//if (FAILED(hResult))
-			//{
-			//	return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"SetGPUThreadPriority failed") };
-			//}
+			//Set gpu thread scheduler priority
+			hResult = vDirectXInstance.iDxgiDevice4->SetGPUThreadPriority(0);
+			if (FAILED(hResult))
+			{
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"SetGPUThreadPriority failed") };
+			}
 
 			//Set multithread protection
 			hResult = vDirectXInstance.iD3D11Multithread0->SetMultithreadProtected(TRUE);
@@ -316,11 +317,11 @@ namespace
 		{
 			//Set render target view texture description
 			D3D11_TEXTURE2D_DESC iD3DTexture2D0DescRenderTargetView{};
-			iD3DTexture2D0DescRenderTargetView.Width = vCaptureDetails.OutputWidth;
-			iD3DTexture2D0DescRenderTargetView.Height = vCaptureDetails.OutputHeight;
-			iD3DTexture2D0DescRenderTargetView.MipLevels = vDirectXInstance.TextureMipLevels;
+			iD3DTexture2D0DescRenderTargetView.Width = vDirectXInstance.TextureWidthCapture;
+			iD3DTexture2D0DescRenderTargetView.Height = vDirectXInstance.TextureHeightCapture;
+			iD3DTexture2D0DescRenderTargetView.MipLevels = 1;
 			iD3DTexture2D0DescRenderTargetView.ArraySize = 1;
-			iD3DTexture2D0DescRenderTargetView.Format = vDirectXInstance.iDxgiFormat;
+			iD3DTexture2D0DescRenderTargetView.Format = vDirectXInstance.TextureFormatCapture;
 			iD3DTexture2D0DescRenderTargetView.SampleDesc.Count = 1;
 			iD3DTexture2D0DescRenderTargetView.SampleDesc.Quality = 0;
 			iD3DTexture2D0DescRenderTargetView.Usage = D3D11_USAGE_DEFAULT;
@@ -356,9 +357,29 @@ namespace
 				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"CreateRenderTargetView failed") };
 			}
 
+			//Adjust render target view texture description
+			iD3DTexture2D0DescRenderTargetView.Width = vDirectXInstance.TextureWidthOutput;
+			iD3DTexture2D0DescRenderTargetView.Height = vDirectXInstance.TextureHeightOutput;
+			iD3DTexture2D0DescRenderTargetView.Format = vDirectXInstance.TextureFormatOutput;
+
+			//Create render target view texture (Pass Out)
+			hResult = vDirectXInstance.iD3D11Device5->CreateTexture2D(&iD3DTexture2D0DescRenderTargetView, NULL, &vDirectXInstance.iD3D11Texture2D0RenderTargetViewPassOut);
+			if (FAILED(hResult))
+			{
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"CreateTexture2D RenderTargetView failed") };
+			}
+
+			//Create and set render target view
+			hResult = vDirectXInstance.iD3D11Device5->CreateRenderTargetView(vDirectXInstance.iD3D11Texture2D0RenderTargetViewPassOut, NULL, &vDirectXInstance.iD3D11RenderTargetView0PassOut);
+			if (FAILED(hResult))
+			{
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"CreateRenderTargetView failed") };
+			}
+
 			//Clear render target views
 			vDirectXInstance.iD3D11DeviceContext4->ClearRenderTargetView(vDirectXInstance.iD3D11RenderTargetView0Pass1, ColorRgbaBlack);
 			vDirectXInstance.iD3D11DeviceContext4->ClearRenderTargetView(vDirectXInstance.iD3D11RenderTargetView0Pass2, ColorRgbaBlack);
+			vDirectXInstance.iD3D11DeviceContext4->ClearRenderTargetView(vDirectXInstance.iD3D11RenderTargetView0PassOut, ColorRgbaBlack);
 
 			//Return result
 			return { .Status = CaptureStatus::Success };
@@ -374,11 +395,29 @@ namespace
 	{
 		try
 		{
-			//Create and set viewport
-			D3D11_VIEWPORT iD3D11ViewPort{};
-			iD3D11ViewPort.Width = vCaptureDetails.OutputWidth;
-			iD3D11ViewPort.Height = vCaptureDetails.OutputHeight;
-			vDirectXInstance.iD3D11DeviceContext4->RSSetViewports(1, &iD3D11ViewPort);
+			//Create view port (Pass 1)
+			vDirectXInstance.iD3D11ViewPortPass1.Width = vDirectXInstance.TextureWidthCapture;
+			vDirectXInstance.iD3D11ViewPortPass1.Height = vDirectXInstance.TextureHeightCapture;
+			vDirectXInstance.iD3D11ViewPortPass1.MinDepth = 0.0F;
+			vDirectXInstance.iD3D11ViewPortPass1.MaxDepth = 1.0F;
+			vDirectXInstance.iD3D11ViewPortPass1.TopLeftX = 0.0F;
+			vDirectXInstance.iD3D11ViewPortPass1.TopLeftY = 0.0F;
+
+			//Create view port (Pass 2)
+			vDirectXInstance.iD3D11ViewPortPass2.Width = vDirectXInstance.TextureWidthCapture;
+			vDirectXInstance.iD3D11ViewPortPass2.Height = vDirectXInstance.TextureHeightCapture;
+			vDirectXInstance.iD3D11ViewPortPass2.MinDepth = 0.0F;
+			vDirectXInstance.iD3D11ViewPortPass2.MaxDepth = 1.0F;
+			vDirectXInstance.iD3D11ViewPortPass2.TopLeftX = 0.0F;
+			vDirectXInstance.iD3D11ViewPortPass2.TopLeftY = 0.0F;
+
+			//Create view port (Pass Out)
+			vDirectXInstance.iD3D11ViewPortPassOut.Width = vDirectXInstance.TextureWidthOutput;
+			vDirectXInstance.iD3D11ViewPortPassOut.Height = vDirectXInstance.TextureHeightOutput;
+			vDirectXInstance.iD3D11ViewPortPassOut.MinDepth = 0.0F;
+			vDirectXInstance.iD3D11ViewPortPassOut.MaxDepth = 1.0F;
+			vDirectXInstance.iD3D11ViewPortPassOut.TopLeftX = 0.0F;
+			vDirectXInstance.iD3D11ViewPortPassOut.TopLeftY = 0.0F;
 
 			//Return result
 			return { .Status = CaptureStatus::Success };
@@ -394,18 +433,26 @@ namespace
 	{
 		try
 		{
+			//Set shader compile flags
+			UINT iD3DCompileFlags = D3DCOMPILE_ENABLE_STRICTNESS | D3DCOMPILE_OPTIMIZATION_LEVEL3;
+
 			//Load shaders from file
-			hResult = D3DCompileFromFile(L"Shaders\\VertexShader.hlsl", NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "vs_5_0", NULL, NULL, &vDirectXInstance.iD3DBlobShaderVertex0, NULL);
+			hResult = D3DCompileFromFile(L"Shaders\\VertexShader.hlsl", NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "vs_5_0", iD3DCompileFlags, NULL, &vDirectXInstance.iD3DBlobShaderVertex0, NULL);
 			if (FAILED(hResult))
 			{
 				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed loading vertex shader") };
 			}
-			hResult = D3DCompileFromFile(L"Shaders\\PixelShaderPass1.hlsl", NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "ps_5_0", NULL, NULL, &vDirectXInstance.iD3DBlobShaderPixel0Pass1, NULL);
+			hResult = D3DCompileFromFile(L"Shaders\\PixelShaderPass1.hlsl", NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "ps_5_0", iD3DCompileFlags, NULL, &vDirectXInstance.iD3DBlobShaderPixel0Pass1, NULL);
 			if (FAILED(hResult))
 			{
 				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed loading pixel shader") };
 			}
-			hResult = D3DCompileFromFile(L"Shaders\\PixelShaderPass2.hlsl", NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "ps_5_0", NULL, NULL, &vDirectXInstance.iD3DBlobShaderPixel0Pass2, NULL);
+			hResult = D3DCompileFromFile(L"Shaders\\PixelShaderPass2.hlsl", NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "ps_5_0", iD3DCompileFlags, NULL, &vDirectXInstance.iD3DBlobShaderPixel0Pass2, NULL);
+			if (FAILED(hResult))
+			{
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed loading pixel shader") };
+			}
+			hResult = D3DCompileFromFile(L"Shaders\\PixelShaderPassOut.hlsl", NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "ps_5_0", iD3DCompileFlags, NULL, &vDirectXInstance.iD3DBlobShaderPixel0PassOut, NULL);
 			if (FAILED(hResult))
 			{
 				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed loading pixel shader") };
@@ -423,6 +470,11 @@ namespace
 				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed creating pixel shader") };
 			}
 			hResult = vDirectXInstance.iD3D11Device5->CreatePixelShader(vDirectXInstance.iD3DBlobShaderPixel0Pass2->GetBufferPointer(), vDirectXInstance.iD3DBlobShaderPixel0Pass2->GetBufferSize(), NULL, &vDirectXInstance.iD3D11ShaderPixel0Pass2);
+			if (FAILED(hResult))
+			{
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed creating pixel shader") };
+			}
+			hResult = vDirectXInstance.iD3D11Device5->CreatePixelShader(vDirectXInstance.iD3DBlobShaderPixel0PassOut->GetBufferPointer(), vDirectXInstance.iD3DBlobShaderPixel0PassOut->GetBufferSize(), NULL, &vDirectXInstance.iD3D11ShaderPixel0PassOut);
 			if (FAILED(hResult))
 			{
 				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed creating pixel shader") };
@@ -455,12 +507,9 @@ namespace
 	{
 		try
 		{
-			//Check if pixel shader multi pass is needed
-			vDirectXInstance.PixelShaderMultiPass = vCaptureSettings.Blur != 0.0F;
-
 			//Create shader variables
 			ShaderVariables shaderVariables{};
-			shaderVariables.MultiPass = vDirectXInstance.PixelShaderMultiPass;
+			shaderVariables.TextureFormat = vCaptureDetails.MediaTextureFormat;
 			shaderVariables.HDRtoSDR = vCaptureDetails.HDRtoSDR;
 			shaderVariables.HDRPaperWhite = vCaptureSettings.HDRPaperWhite;
 			shaderVariables.HDRBrightness = vCaptureSettings.HDRBrightness;
@@ -478,11 +527,11 @@ namespace
 			//Set texture filter type
 			if (vDirectXInstance.TextureResizing)
 			{
-				shaderVariables.TextureFilter = vCaptureSettings.TextureFilter;
+				shaderVariables.TextureFilter = (int)vCaptureSettings.TextureFilter;
 			}
 			else
 			{
-				shaderVariables.TextureFilter = TextureFilters::Nearest;
+				shaderVariables.TextureFilter = (int)TextureFilters::Nearest;
 			}
 
 			//Create buffer description

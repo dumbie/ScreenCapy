@@ -1,4 +1,5 @@
 #pragma once
+#include "pch.h"
 #include "CaptureVariables.h"
 
 namespace
@@ -20,7 +21,11 @@ namespace
 			CComPtr<IMediaEvent> iMediaEvent;
 
 			//Create graph builder
-			HRESULT hResult = CoCreateInstance(CLSID_FilterGraph, NULL, CLSCTX_ALL, IID_IGraphBuilder, (LPVOID*)&iGraphBuilder);
+			hResult = CoCreateInstance(CLSID_FilterGraph, NULL, CLSCTX_ALL, IID_IGraphBuilder, (LPVOID*)&iGraphBuilder);
+			if (FAILED(hResult))
+			{
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Initializing audio file failed") };
+			}
 
 			//Convert variables
 			iGraphBuilder->QueryInterface(&iMediaControl);
@@ -31,14 +36,14 @@ namespace
 			hResult = iGraphBuilder->RenderFile(audioFile, NULL);
 			if (FAILED(hResult))
 			{
-				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Render audio file failed") };
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Rendering audio file failed") };
 			}
 
 			//Play audio file
 			hResult = iMediaControl->Run();
 			if (FAILED(hResult))
 			{
-				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Run audio file failed") };
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Running audio file failed") };
 			}
 
 			//Get audio duration

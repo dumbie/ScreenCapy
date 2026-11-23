@@ -1,17 +1,25 @@
 #pragma once
-#include "CaptureIncludes.h"
+#include "pch.h"
 
 namespace
 {
 	//Enumerators
-	enum CaptureStatus
+	enum class CaptureStatus
 	{
 		Success = 0,
 		Failed = 1,
 		Busy = 2
 	};
 
-	enum ImageFormats
+	enum class CaptureTypes
+	{
+		None = 0,
+		Failed = 1,
+		Image = 2,
+		Video = 3
+	};
+
+	enum class ImageFormats
 	{
 		JXR = 0,
 		JPG = 1,
@@ -21,27 +29,27 @@ namespace
 		HEIF = 5
 	};
 
-	enum VideoRateControls
+	enum class VideoRateControls
 	{
 		VBR = 0,
 		CBR = 1
 	};
 
-	enum VideoFormats
+	enum class VideoFormats
 	{
 		H264 = 0,
 		HEVC = 1,
 		AV1 = 2
 	};
 
-	enum AudioFormats
+	enum class AudioFormats
 	{
 		MP3 = 0,
 		AAC = 1,
 		FLAC = 2
 	};
 
-	enum TextureFilters
+	enum class TextureFilters
 	{
 		Nearest = 0,
 		Bilinear = 1
@@ -63,6 +71,7 @@ namespace
 
 	struct CaptureSettings
 	{
+		CaptureTypes CaptureType = CaptureTypes::Image;
 		UINT MonitorId = 0;
 		UINT MaxPixelDimension = 0;
 		BOOL SoundEffect = true;
@@ -87,21 +96,23 @@ namespace
 	{
 		UINT OriginalWidth;
 		UINT OriginalHeight;
-		UINT OutputWidth;
-		UINT OutputHeight;
-		UINT RefreshRate;
+		UINT OriginalRefreshRate;
+		UINT MediaWidth;
+		UINT MediaHeight;
+		UINT MediaRowCount;
+		UINT MediaRowByteSize;
+		UINT MediaPixelByteSize;
+		UINT MediaTotalByteSize;
+		UINT MediaTextureFormat;
 		BOOL HDREnabled;
 		BOOL HDRtoSDR;
 		FLOAT SDRWhiteLevel;
-		UINT PixelByteSize;
-		UINT WidthByteSize;
-		UINT TotalByteSize;
 	};
 
 	struct ShaderVariables
 	{
 		int TextureFilter;
-		BOOL MultiPass;
+		int TextureFormat;
 		BOOL HDRtoSDR;
 		FLOAT HDRPaperWhite;
 		FLOAT HDRBrightness;
@@ -136,11 +147,16 @@ namespace
 	struct DirectXInstance
 	{
 		//Information
-		BOOL PixelShaderMultiPass;
-		BOOL TextureResizing;
-		UINT TextureMipLevels;
-		DXGI_FORMAT iDxgiFormat;
 		DXGI_OUTPUT_DESC1 iDxgiOutputDescription1;
+
+		//Texture
+		BOOL TextureResizing;
+		UINT TextureWidthCapture;
+		UINT TextureHeightCapture;
+		DXGI_FORMAT TextureFormatCapture;
+		UINT TextureWidthOutput;
+		UINT TextureHeightOutput;
+		DXGI_FORMAT TextureFormatOutput;
 
 		//Direct3D
 		CComPtr<IDXGIDevice4> iDxgiDevice4;
@@ -155,11 +171,16 @@ namespace
 		CComPtr<ID3D11SamplerState> iD3D11SamplerState0;
 
 		//Views
+		D3D11_VIEWPORT iD3D11ViewPortPass1;
+		D3D11_VIEWPORT iD3D11ViewPortPass2;
+		D3D11_VIEWPORT iD3D11ViewPortPassOut;
 		CComPtr<ID3D11InputLayout> iD3D11InputLayout0;
 		CComPtr<ID3D11RenderTargetView> iD3D11RenderTargetView0Pass1;
 		CComPtr<ID3D11RenderTargetView> iD3D11RenderTargetView0Pass2;
+		CComPtr<ID3D11RenderTargetView> iD3D11RenderTargetView0PassOut;
 		CComPtr<ID3D11ShaderResourceView> iD3D11ShaderResourceView0Pass1;
 		CComPtr<ID3D11ShaderResourceView> iD3D11ShaderResourceView0Pass2;
+		CComPtr<ID3D11ShaderResourceView> iD3D11ShaderResourceView0PassOut;
 
 		//Shaders
 		CComPtr<ID3D11Buffer> iD3D11BufferVertex0;
@@ -167,15 +188,18 @@ namespace
 		CComPtr<ID3DBlob> iD3DBlobShaderVertex0;
 		CComPtr<ID3DBlob> iD3DBlobShaderPixel0Pass1;
 		CComPtr<ID3DBlob> iD3DBlobShaderPixel0Pass2;
+		CComPtr<ID3DBlob> iD3DBlobShaderPixel0PassOut;
 		CComPtr<ID3D11VertexShader> iD3D11ShaderVertex0;
 		CComPtr<ID3D11PixelShader> iD3D11ShaderPixel0Pass1;
 		CComPtr<ID3D11PixelShader> iD3D11ShaderPixel0Pass2;
+		CComPtr<ID3D11PixelShader> iD3D11ShaderPixel0PassOut;
 
 		//Textures
 		CComPtr<ID3D11Texture2D> iD3D11Texture2D0CpuRead;
 		CComPtr<ID3D11Texture2D> iD3D11Texture2D0ScreenCapture;
 		CComPtr<ID3D11Texture2D> iD3D11Texture2D0RenderTargetViewPass1;
 		CComPtr<ID3D11Texture2D> iD3D11Texture2D0RenderTargetViewPass2;
+		CComPtr<ID3D11Texture2D> iD3D11Texture2D0RenderTargetViewPassOut;
 	};
 
 	struct BitmapImageInstance

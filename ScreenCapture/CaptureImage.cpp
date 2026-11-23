@@ -1,4 +1,5 @@
 #pragma once
+#include "pch.h"
 #include "CaptureVariables.h"
 #include "CaptureReset.cpp"
 #include "CaptureScreen.cpp"
@@ -106,13 +107,13 @@ namespace
 			}
 
 			//Bitmap frame set size
-			hResult = vBitmapImageInstance.iWICBitmapFrameEncode->SetSize(vCaptureDetails.OutputWidth, vCaptureDetails.OutputHeight);
+			hResult = vBitmapImageInstance.iWICBitmapFrameEncode->SetSize(vCaptureDetails.MediaWidth, vCaptureDetails.MediaHeight);
 			if (FAILED(hResult))
 			{
 				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed setting bitmap frame size") };
 			}
 
-			AVDebugWriteLine("Bitmap frame size, Width: " << vCaptureDetails.OutputWidth << " Height: " << vCaptureDetails.OutputHeight);
+			AVDebugWriteLine("Bitmap frame size, Width: " << vCaptureDetails.MediaWidth << " Height: " << vCaptureDetails.MediaHeight);
 
 			//Bitmap frame set resolution
 			hResult = vBitmapImageInstance.iWICBitmapFrameEncode->SetResolution(96, 96);
@@ -125,7 +126,7 @@ namespace
 			if (iWicFormatGuid == GUID_ContainerFormatJpeg && vBitmapImageInstance.iWicPixelFormatGuidSource != vBitmapImageInstance.iWicPixelFormatGuidJpeg)
 			{
 				//Create bitmap from memory
-				hResult = vBitmapImageInstance.iWICImagingFactory->CreateBitmapFromMemory(vCaptureDetails.OutputWidth, vCaptureDetails.OutputHeight, vBitmapImageInstance.iWicPixelFormatGuidSource, vCaptureDetails.WidthByteSize, vCaptureDetails.TotalByteSize, bitmapData, &vBitmapImageInstance.iWICBitmap);
+				hResult = vBitmapImageInstance.iWICImagingFactory->CreateBitmapFromMemory(vCaptureDetails.MediaWidth, vCaptureDetails.MediaHeight, vBitmapImageInstance.iWicPixelFormatGuidSource, vCaptureDetails.MediaRowByteSize, vCaptureDetails.MediaTotalByteSize, bitmapData, &vBitmapImageInstance.iWICBitmap);
 				if (FAILED(hResult))
 				{
 					return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed creating bitmap from memory") };
@@ -153,7 +154,7 @@ namespace
 				}
 
 				//Bitmap encode write
-				WICRect iWicRectangle = { 0, 0, (INT)vCaptureDetails.OutputWidth, (INT)vCaptureDetails.OutputHeight };
+				WICRect iWicRectangle = { 0, 0, (INT)vCaptureDetails.MediaWidth, (INT)vCaptureDetails.MediaHeight };
 				hResult = vBitmapImageInstance.iWICBitmapFrameEncode->WriteSource(vBitmapImageInstance.iWICFormatConverter, &iWicRectangle);
 				if (FAILED(hResult))
 				{
@@ -170,7 +171,7 @@ namespace
 				}
 
 				//Bitmap frame encode write
-				hResult = vBitmapImageInstance.iWICBitmapFrameEncode->WritePixels(vCaptureDetails.OutputHeight, vCaptureDetails.WidthByteSize, vCaptureDetails.TotalByteSize, bitmapData);
+				hResult = vBitmapImageInstance.iWICBitmapFrameEncode->WritePixels(vCaptureDetails.MediaHeight, vCaptureDetails.MediaRowByteSize, vCaptureDetails.MediaTotalByteSize, bitmapData);
 				if (FAILED(hResult))
 				{
 					return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed encoding bitmap frame write") };
@@ -205,13 +206,13 @@ namespace
 	{
 		try
 		{
-			//Check image save format
+			//Check and set image save format
 			GUID imageSaveFormat{};
-			if (imageFormat == JXR)
+			if (imageFormat == ImageFormats::JXR)
 			{
 				imageSaveFormat = GUID_ContainerFormatWmp;
 			}
-			else if (imageFormat == JPG)
+			else if (imageFormat == ImageFormats::JPG)
 			{
 				if (vCaptureDetails.HDREnabled && !vCaptureDetails.HDRtoSDR)
 				{
@@ -223,7 +224,7 @@ namespace
 				}
 				imageSaveFormat = GUID_ContainerFormatJpeg;
 			}
-			else if (imageFormat == PNG)
+			else if (imageFormat == ImageFormats::PNG)
 			{
 				if (vCaptureDetails.HDREnabled && !vCaptureDetails.HDRtoSDR)
 				{
@@ -235,7 +236,7 @@ namespace
 				}
 				imageSaveFormat = GUID_ContainerFormatPng;
 			}
-			else if (imageFormat == BMP)
+			else if (imageFormat == ImageFormats::BMP)
 			{
 				if (vCaptureDetails.HDREnabled && !vCaptureDetails.HDRtoSDR)
 				{
@@ -247,7 +248,7 @@ namespace
 				}
 				imageSaveFormat = GUID_ContainerFormatBmp;
 			}
-			else if (imageFormat == TIF)
+			else if (imageFormat == ImageFormats::TIF)
 			{
 				if (vCaptureDetails.HDREnabled && !vCaptureDetails.HDRtoSDR)
 				{
@@ -259,7 +260,7 @@ namespace
 				}
 				imageSaveFormat = GUID_ContainerFormatTiff;
 			}
-			else if (imageFormat == HEIF)
+			else if (imageFormat == ImageFormats::HEIF)
 			{
 				if (vCaptureDetails.HDREnabled && !vCaptureDetails.HDRtoSDR)
 				{
@@ -273,7 +274,7 @@ namespace
 			}
 
 			//Get screen bytes
-			std::vector<BYTE> screenBytes = GetScreenBytes(false);
+			std::vector<BYTE> screenBytes = GetScreenBytes(true, false);
 
 			//Check screen bytes
 			if (screenBytes.empty())

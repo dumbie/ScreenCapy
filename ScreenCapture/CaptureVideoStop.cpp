@@ -1,4 +1,5 @@
 #pragma once
+#include "pch.h"
 #include "CaptureVariables.h"
 #include "CaptureReset.cpp"
 #include "PlayAudio.cpp"
@@ -26,17 +27,17 @@ namespace
 			MediaFoundationLoopStop();
 
 			//Flush media capture
-			hResult = vMediaFoundationInstance.imfSinkWriter->Flush(vMediaFoundationInstance.vImfSinkWriterIndex);
+			hResult = vMediaFoundationInstance.imfSinkWriter->Flush(MF_SINK_WRITER_ALL_STREAMS);
 			if (FAILED(hResult))
 			{
-				return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"Failed flushing media capture") };
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed flushing media capture") };
 			}
 
 			//Finalize media capture
 			hResult = vMediaFoundationInstance.imfSinkWriter->Finalize();
 			if (FAILED(hResult))
 			{
-				return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"Failed finalizing media capture") };
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed finalizing media capture") };
 			}
 
 			//Stop media foundation

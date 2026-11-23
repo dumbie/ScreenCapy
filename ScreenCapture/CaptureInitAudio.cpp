@@ -1,4 +1,5 @@
 #pragma once
+#include "pch.h"
 #include "CaptureVariables.h"
 
 namespace
@@ -159,20 +160,20 @@ namespace
 			}
 
 			//MP3
-			if (vMediaSettings.AudioFormat == MP3)
+			if (vMediaSettings.AudioFormat == AudioFormats::MP3)
 			{
 				imfMediaTypeAudioOut->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_MP3);
 			}
 
 			//AAC
-			if (vMediaSettings.AudioFormat == AAC)
+			if (vMediaSettings.AudioFormat == AudioFormats::AAC)
 			{
 				imfMediaTypeAudioOut->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_AAC);
 				imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.wBitsPerSample);
 			}
 
 			//FLAC
-			if (vMediaSettings.AudioFormat == FLAC)
+			if (vMediaSettings.AudioFormat == AudioFormats::FLAC)
 			{
 				imfMediaTypeAudioOut->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_FLAC);
 				imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.wBitsPerSample);

@@ -1,4 +1,5 @@
 #pragma once
+#include "pch.h"
 #include "CaptureVariables.h"
 
 namespace
@@ -16,28 +17,28 @@ namespace
 			}
 
 			//Create image byte array
-			std::vector<BYTE> BitmapBytes(vCaptureDetails.TotalByteSize);
+			std::vector<BYTE> bitmapBytes(vCaptureDetails.MediaTotalByteSize);
 
 			//Write image byte array
-			BYTE* SourceBuffer = (BYTE*)iD3DMappedSubResource.pData;
+			BYTE* sourceBuffer = (BYTE*)iD3DMappedSubResource.pData;
 			if (textureFlip)
 			{
-				BYTE* BitmapBuffer = BitmapBytes.data() + vCaptureDetails.TotalByteSize - vCaptureDetails.WidthByteSize;
-				for (UINT i = 0; i < vCaptureDetails.OutputHeight; i++)
+				BYTE* bitmapBuffer = bitmapBytes.data() + vCaptureDetails.MediaTotalByteSize - vCaptureDetails.MediaRowByteSize;
+				for (UINT i = 0; i < vCaptureDetails.MediaRowCount; i++)
 				{
-					memcpy(BitmapBuffer, SourceBuffer, vCaptureDetails.WidthByteSize);
-					SourceBuffer += iD3DMappedSubResource.RowPitch;
-					BitmapBuffer -= vCaptureDetails.WidthByteSize;
+					memcpy(bitmapBuffer, sourceBuffer, vCaptureDetails.MediaRowByteSize);
+					sourceBuffer += iD3DMappedSubResource.RowPitch;
+					bitmapBuffer -= vCaptureDetails.MediaRowByteSize;
 				}
 			}
 			else
 			{
-				BYTE* BitmapBuffer = BitmapBytes.data();
-				for (UINT i = 0; i < vCaptureDetails.OutputHeight; i++)
+				BYTE* bitmapBuffer = bitmapBytes.data();
+				for (UINT i = 0; i < vCaptureDetails.MediaRowCount; i++)
 				{
-					memcpy(BitmapBuffer, SourceBuffer, vCaptureDetails.WidthByteSize);
-					SourceBuffer += iD3DMappedSubResource.RowPitch;
-					BitmapBuffer += vCaptureDetails.WidthByteSize;
+					memcpy(bitmapBuffer, sourceBuffer, vCaptureDetails.MediaRowByteSize);
+					sourceBuffer += iD3DMappedSubResource.RowPitch;
+					bitmapBuffer += vCaptureDetails.MediaRowByteSize;
 				}
 			}
 
@@ -45,7 +46,7 @@ namespace
 			vDirectXInstance.iD3D11DeviceContext4->Unmap(textureTarget, 0);
 
 			//Return result
-			return BitmapBytes;
+			return bitmapBytes;
 		}
 		catch (...)
 		{

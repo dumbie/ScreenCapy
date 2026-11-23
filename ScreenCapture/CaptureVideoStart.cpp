@@ -1,4 +1,5 @@
 #pragma once
+#include "pch.h"
 #include "CaptureVariables.h"
 #include "CaptureInitMedia.cpp"
 #include "CaptureLoop.cpp"

@@ -1,4 +1,5 @@
 #pragma once
+#include "pch.h"
 #include "CaptureVariables.h"
 
 namespace
@@ -56,6 +57,9 @@ namespace
 					return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed creating shader resource view") };
 				}
 
+				//Set view port
+				vDirectXInstance.iD3D11DeviceContext4->RSSetViewports(1, &vDirectXInstance.iD3D11ViewPortPass1);
+
 				//Set render target view
 				vDirectXInstance.iD3D11DeviceContext4->OMSetRenderTargets(1, &vDirectXInstance.iD3D11RenderTargetView0Pass1, NULL);
 
@@ -70,7 +74,6 @@ namespace
 			}
 
 			//Pixel shader (Pass 2)
-			if (vDirectXInstance.PixelShaderMultiPass)
 			{
 				//Create shader resource view
 				hResult = vDirectXInstance.iD3D11Device5->CreateShaderResourceView(vDirectXInstance.iD3D11Texture2D0RenderTargetViewPass1, NULL, &vDirectXInstance.iD3D11ShaderResourceView0Pass2);
@@ -78,6 +81,9 @@ namespace
 				{
 					return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed creating shader resource view") };
 				}
+
+				//Set view port
+				vDirectXInstance.iD3D11DeviceContext4->RSSetViewports(1, &vDirectXInstance.iD3D11ViewPortPass2);
 
 				//Set render target view
 				vDirectXInstance.iD3D11DeviceContext4->OMSetRenderTargets(1, &vDirectXInstance.iD3D11RenderTargetView0Pass2, NULL);
@@ -87,6 +93,31 @@ namespace
 
 				//Set pixel shader pass
 				vDirectXInstance.iD3D11DeviceContext4->PSSetShader(vDirectXInstance.iD3D11ShaderPixel0Pass2, NULL, 0);
+
+				//Draw texture with shaders
+				vDirectXInstance.iD3D11DeviceContext4->Draw(vertexVerticesCount, 0);
+			}
+
+			//Pixel shader (Pass Out)
+			{
+				//Create shader resource view
+				hResult = vDirectXInstance.iD3D11Device5->CreateShaderResourceView(vDirectXInstance.iD3D11Texture2D0RenderTargetViewPass2, NULL, &vDirectXInstance.iD3D11ShaderResourceView0PassOut);
+				if (FAILED(hResult))
+				{
+					return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed creating shader resource view") };
+				}
+
+				//Set view port
+				vDirectXInstance.iD3D11DeviceContext4->RSSetViewports(1, &vDirectXInstance.iD3D11ViewPortPassOut);
+
+				//Set render target view
+				vDirectXInstance.iD3D11DeviceContext4->OMSetRenderTargets(1, &vDirectXInstance.iD3D11RenderTargetView0PassOut, NULL);
+
+				//Set shader resource view
+				vDirectXInstance.iD3D11DeviceContext4->PSSetShaderResources(0, 1, &vDirectXInstance.iD3D11ShaderResourceView0PassOut);
+
+				//Set pixel shader pass
+				vDirectXInstance.iD3D11DeviceContext4->PSSetShader(vDirectXInstance.iD3D11ShaderPixel0PassOut, NULL, 0);
 
 				//Draw texture with shaders
 				vDirectXInstance.iD3D11DeviceContext4->Draw(vertexVerticesCount, 0);

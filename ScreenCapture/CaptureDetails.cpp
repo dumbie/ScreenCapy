@@ -1,4 +1,5 @@
 #pragma once
+#include "pch.h"
 #include "CaptureVariables.h"
 #include "CaptureMonitorInfo.cpp"
 
@@ -8,33 +9,6 @@ namespace
 	{
 		try
 		{
-			//Get and set HDR details
-			vCaptureDetails.HDREnabled = vDirectXInstance.iDxgiOutputDescription1.ColorSpace == DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020 || vDirectXInstance.iDxgiOutputDescription1.ColorSpace == DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020;
-			if (vCaptureDetails.HDREnabled)
-			{
-				vCaptureDetails.HDRtoSDR = vCaptureSettings.HDRtoSDR;
-				if (vCaptureDetails.HDRtoSDR)
-				{
-					vBitmapImageInstance.iWicPixelFormatGuidSource = GUID_WICPixelFormat32bppBGRA;
-					vDirectXInstance.iDxgiFormat = DXGI_FORMAT_B8G8R8A8_UNORM; //DXGI_FORMAT_B8G8R8A8_UNORM_SRGB
-					vCaptureDetails.PixelByteSize = 4;
-					vCaptureDetails.SDRWhiteLevel = GetMonitorSDRWhiteLevel(vDirectXInstance.iDxgiOutputDescription1.Monitor);
-				}
-				else
-				{
-					vBitmapImageInstance.iWicPixelFormatGuidSource = GUID_WICPixelFormat64bppRGBAHalf;
-					vDirectXInstance.iDxgiFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
-					vCaptureDetails.PixelByteSize = 8;
-				}
-			}
-			else
-			{
-				vCaptureDetails.HDRtoSDR = false;
-				vBitmapImageInstance.iWicPixelFormatGuidSource = GUID_WICPixelFormat32bppBGRA;
-				vDirectXInstance.iDxgiFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
-				vCaptureDetails.PixelByteSize = 4;
-			}
-
 			//Get monitor details
 			UINT monitorPixelsWidth = 0;
 			UINT monitorPixelsHeight = 0;
@@ -44,38 +18,194 @@ namespace
 			//Update capture variables
 			vCaptureDetails.OriginalWidth = monitorPixelsWidth;
 			vCaptureDetails.OriginalHeight = monitorPixelsHeight;
-			vCaptureDetails.RefreshRate = monitorRefreshRate;
+			vCaptureDetails.OriginalRefreshRate = monitorRefreshRate;
+
+			//Check if texture resizing is needed
 			vDirectXInstance.TextureResizing = vCaptureSettings.MaxPixelDimension != 0 && vCaptureDetails.OriginalWidth > vCaptureSettings.MaxPixelDimension && vCaptureDetails.OriginalHeight > vCaptureSettings.MaxPixelDimension;
 			if (vDirectXInstance.TextureResizing)
 			{
-				DOUBLE resizedWidth = 0.01;
-				DOUBLE resizedHeight = 0.01;
+				FLOAT resizedWidth = 0.01F;
+				FLOAT resizedHeight = 0.01F;
 				UINT minDimension = min(vCaptureDetails.OriginalWidth, vCaptureDetails.OriginalHeight);
 				UINT maxDimension = vCaptureSettings.MaxPixelDimension;
 				//Find nearest full pixel dimensions to keep original ratio
 				while (resizedWidth != (UINT)resizedWidth || resizedHeight != (UINT)resizedHeight)
 				{
-					DOUBLE differenceRatio = (DOUBLE)minDimension / maxDimension;
+					FLOAT differenceRatio = (FLOAT)minDimension / maxDimension;
 					resizedWidth = vCaptureDetails.OriginalWidth / differenceRatio;
 					resizedHeight = vCaptureDetails.OriginalHeight / differenceRatio;
 					maxDimension++;
 				}
-				vCaptureDetails.OutputWidth = resizedWidth;
-				vCaptureDetails.OutputHeight = resizedHeight;
+				vCaptureDetails.MediaWidth = resizedWidth;
+				vCaptureDetails.MediaHeight = resizedHeight;
 			}
 			else
 			{
-				vCaptureDetails.OutputWidth = vCaptureDetails.OriginalWidth;
-				vCaptureDetails.OutputHeight = vCaptureDetails.OriginalHeight;
+				vCaptureDetails.MediaWidth = vCaptureDetails.OriginalWidth;
+				vCaptureDetails.MediaHeight = vCaptureDetails.OriginalHeight;
 			}
-			vCaptureDetails.WidthByteSize = vCaptureDetails.OutputWidth * vCaptureDetails.PixelByteSize;
-			vCaptureDetails.TotalByteSize = vCaptureDetails.OutputWidth * vCaptureDetails.OutputHeight * vCaptureDetails.PixelByteSize;
 
-			//Set used texture mip levels
-			vDirectXInstance.TextureMipLevels = 1 + log2(max(vCaptureDetails.OutputWidth, vCaptureDetails.OutputHeight));
+			//Check if display HDR is enabled
+			DXGI_COLOR_SPACE_TYPE displayColorSpace = vDirectXInstance.iDxgiOutputDescription1.ColorSpace;
+			vCaptureDetails.HDREnabled = GetMonitorAdvancedColorEnabled(vDirectXInstance.iDxgiOutputDescription1.Monitor);
+			AVDebugWriteLine("Display HDR enabled: " << vCaptureDetails.HDREnabled << " / " << displayColorSpace);
+
+			//Set capture textures and details
+			if (vCaptureDetails.HDREnabled)
+			{
+				if (vCaptureSettings.HDRtoSDR)
+				{
+					if (vCaptureSettings.CaptureType == CaptureTypes::Image)
+					{
+						//Image
+						vBitmapImageInstance.iWicPixelFormatGuidSource = GUID_WICPixelFormat32bppBGRA;
+
+						//Capture
+						vDirectXInstance.TextureWidthCapture = vCaptureDetails.MediaWidth;
+						vDirectXInstance.TextureHeightCapture = vCaptureDetails.MediaHeight;
+						vDirectXInstance.TextureFormatCapture = DXGI_FORMAT_R16G16B16A16_FLOAT;
+
+						//Output
+						vDirectXInstance.TextureWidthOutput = vCaptureDetails.MediaWidth;
+						vDirectXInstance.TextureHeightOutput = vCaptureDetails.MediaHeight;
+						vDirectXInstance.TextureFormatOutput = DXGI_FORMAT_B8G8R8A8_UNORM;
+
+						//Details
+						vCaptureDetails.HDRtoSDR = true;
+						vCaptureDetails.SDRWhiteLevel = GetMonitorSDRWhiteLevel(vDirectXInstance.iDxgiOutputDescription1.Monitor);
+						vCaptureDetails.MediaTextureFormat = DXGI_FORMAT_UNKNOWN;
+
+						//Bytes
+						vCaptureDetails.MediaPixelByteSize = 4;
+						vCaptureDetails.MediaRowCount = vDirectXInstance.TextureHeightOutput;
+						vCaptureDetails.MediaRowByteSize = vDirectXInstance.TextureWidthOutput * vCaptureDetails.MediaPixelByteSize;
+						vCaptureDetails.MediaTotalByteSize = vDirectXInstance.TextureWidthOutput * vDirectXInstance.TextureHeightOutput * vCaptureDetails.MediaPixelByteSize;
+					}
+					else
+					{
+						//Capture
+						vDirectXInstance.TextureWidthCapture = vCaptureDetails.MediaWidth;
+						vDirectXInstance.TextureHeightCapture = vCaptureDetails.MediaHeight;
+						vDirectXInstance.TextureFormatCapture = DXGI_FORMAT_R16G16B16A16_FLOAT;
+
+						//Output
+						vDirectXInstance.TextureWidthOutput = vCaptureDetails.MediaWidth;
+						vDirectXInstance.TextureHeightOutput = vCaptureDetails.MediaHeight;
+						vDirectXInstance.TextureFormatOutput = DXGI_FORMAT_B8G8R8A8_UNORM;
+
+						//Details
+						vCaptureDetails.HDRtoSDR = true;
+						vCaptureDetails.SDRWhiteLevel = GetMonitorSDRWhiteLevel(vDirectXInstance.iDxgiOutputDescription1.Monitor);
+						vCaptureDetails.MediaTextureFormat = DXGI_FORMAT_NV12;
+
+						//Bytes
+						vCaptureDetails.MediaPixelByteSize = 4;
+						vCaptureDetails.MediaRowCount = vDirectXInstance.TextureHeightOutput;
+						vCaptureDetails.MediaRowByteSize = vDirectXInstance.TextureWidthOutput * vCaptureDetails.MediaPixelByteSize;
+						vCaptureDetails.MediaTotalByteSize = vDirectXInstance.TextureWidthOutput * vDirectXInstance.TextureHeightOutput * vCaptureDetails.MediaPixelByteSize;
+					}
+				}
+				else
+				{
+					if (vCaptureSettings.CaptureType == CaptureTypes::Image)
+					{
+						//Image
+						vBitmapImageInstance.iWicPixelFormatGuidSource = GUID_WICPixelFormat64bppRGBAHalf;
+
+						//Capture
+						vDirectXInstance.TextureWidthCapture = vCaptureDetails.MediaWidth;
+						vDirectXInstance.TextureHeightCapture = vCaptureDetails.MediaHeight;
+						vDirectXInstance.TextureFormatCapture = DXGI_FORMAT_R16G16B16A16_FLOAT;
+
+						//Output
+						vDirectXInstance.TextureWidthOutput = vCaptureDetails.MediaWidth;
+						vDirectXInstance.TextureHeightOutput = vCaptureDetails.MediaHeight;
+						vDirectXInstance.TextureFormatOutput = DXGI_FORMAT_R16G16B16A16_FLOAT;
+
+						//Details
+						vCaptureDetails.MediaTextureFormat = DXGI_FORMAT_UNKNOWN;
+
+						//Bytes
+						vCaptureDetails.MediaPixelByteSize = 8;
+						vCaptureDetails.MediaRowCount = vDirectXInstance.TextureHeightOutput;
+						vCaptureDetails.MediaRowByteSize = vDirectXInstance.TextureWidthOutput * vCaptureDetails.MediaPixelByteSize;
+						vCaptureDetails.MediaTotalByteSize = vDirectXInstance.TextureWidthOutput * vDirectXInstance.TextureHeightOutput * vCaptureDetails.MediaPixelByteSize;
+					}
+					else
+					{
+						//Capture
+						vDirectXInstance.TextureWidthCapture = vCaptureDetails.MediaWidth;
+						vDirectXInstance.TextureHeightCapture = vCaptureDetails.MediaHeight;
+						vDirectXInstance.TextureFormatCapture = DXGI_FORMAT_R16G16B16A16_FLOAT;
+
+						//Output
+						vDirectXInstance.TextureWidthOutput = vCaptureDetails.MediaWidth / 2;
+						vDirectXInstance.TextureHeightOutput = vCaptureDetails.MediaHeight + vCaptureDetails.MediaHeight / 2;
+						vDirectXInstance.TextureFormatOutput = DXGI_FORMAT_R16G16_UNORM;
+
+						//Details
+						vCaptureDetails.MediaTextureFormat = DXGI_FORMAT_P010;
+
+						//Bytes
+						vCaptureDetails.MediaPixelByteSize = 4;
+						vCaptureDetails.MediaRowCount = vDirectXInstance.TextureHeightOutput;
+						vCaptureDetails.MediaRowByteSize = vDirectXInstance.TextureWidthOutput * vCaptureDetails.MediaPixelByteSize;
+						vCaptureDetails.MediaTotalByteSize = vDirectXInstance.TextureWidthOutput * vDirectXInstance.TextureHeightOutput * vCaptureDetails.MediaPixelByteSize;
+					}
+				}
+			}
+			else
+			{
+				if (vCaptureSettings.CaptureType == CaptureTypes::Image)
+				{
+					//Image
+					vBitmapImageInstance.iWicPixelFormatGuidSource = GUID_WICPixelFormat32bppBGRA;
+
+					//Capture
+					vDirectXInstance.TextureWidthCapture = vCaptureDetails.MediaWidth;
+					vDirectXInstance.TextureHeightCapture = vCaptureDetails.MediaHeight;
+					vDirectXInstance.TextureFormatCapture = DXGI_FORMAT_B8G8R8A8_UNORM;
+
+					//Output
+					vDirectXInstance.TextureWidthOutput = vCaptureDetails.MediaWidth;
+					vDirectXInstance.TextureHeightOutput = vCaptureDetails.MediaHeight;
+					vDirectXInstance.TextureFormatOutput = DXGI_FORMAT_B8G8R8A8_UNORM;
+
+					//Details
+					vCaptureDetails.MediaTextureFormat = DXGI_FORMAT_UNKNOWN;
+
+					//Bytes
+					vCaptureDetails.MediaPixelByteSize = 4;
+					vCaptureDetails.MediaRowCount = vDirectXInstance.TextureHeightOutput;
+					vCaptureDetails.MediaRowByteSize = vDirectXInstance.TextureWidthOutput * vCaptureDetails.MediaPixelByteSize;
+					vCaptureDetails.MediaTotalByteSize = vDirectXInstance.TextureWidthOutput * vDirectXInstance.TextureHeightOutput * vCaptureDetails.MediaPixelByteSize;
+				}
+				else
+				{
+					//Capture
+					vDirectXInstance.TextureWidthCapture = vCaptureDetails.MediaWidth;
+					vDirectXInstance.TextureHeightCapture = vCaptureDetails.MediaHeight;
+					vDirectXInstance.TextureFormatCapture = DXGI_FORMAT_B8G8R8A8_UNORM;
+
+					//Output
+					vDirectXInstance.TextureWidthOutput = vCaptureDetails.MediaWidth;
+					vDirectXInstance.TextureHeightOutput = vCaptureDetails.MediaHeight;
+					vDirectXInstance.TextureFormatOutput = DXGI_FORMAT_B8G8R8A8_UNORM;
+
+					//Details
+					vCaptureDetails.MediaTextureFormat = DXGI_FORMAT_NV12;
+
+					//Bytes
+					vCaptureDetails.MediaPixelByteSize = 4;
+					vCaptureDetails.MediaRowCount = vDirectXInstance.TextureHeightOutput;
+					vCaptureDetails.MediaRowByteSize = vDirectXInstance.TextureWidthOutput * vCaptureDetails.MediaPixelByteSize;
+					vCaptureDetails.MediaTotalByteSize = vDirectXInstance.TextureWidthOutput * vDirectXInstance.TextureHeightOutput * vCaptureDetails.MediaPixelByteSize;
+				}
+			}
 
 			//Return result
-			AVDebugWriteLine("Screen capture output, Width: " << vCaptureDetails.OutputWidth << " Height: " << vCaptureDetails.OutputHeight);
+			AVDebugWriteLine("Screen capture media dimensions, Width: " << vCaptureDetails.MediaWidth << " Height: " << vCaptureDetails.MediaHeight);
+			AVDebugWriteLine("Screen capture media bytes, PixelByteSize: " << vCaptureDetails.MediaPixelByteSize << " RowCount: " << vCaptureDetails.MediaRowCount << " RowByteSize: " << vCaptureDetails.MediaRowByteSize << " TotalByteSize: " << vCaptureDetails.MediaTotalByteSize);
 			return { .Status = CaptureStatus::Success };
 		}
 		catch (...)

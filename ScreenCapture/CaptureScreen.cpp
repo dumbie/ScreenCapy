@@ -1,5 +1,5 @@
 #pragma once
-#include "CaptureIncludes.h"
+#include "pch.h"
 #include "CaptureVariables.h"
 #include "CaptureReset.cpp"
 #include "CaptureTexture.cpp"
@@ -50,7 +50,7 @@ namespace
 		}
 	}
 
-	std::vector<BYTE> GetScreenBytes(BOOL flipScreen)
+	std::vector<BYTE> GetScreenBytes(BOOL updateScreenTexture, BOOL flipScreen)
 	{
 		AVFinally(
 			{
@@ -66,14 +66,17 @@ namespace
 			}
 
 			//Update screen texture
-			capResult = UpdateScreenTexture();
-			if (capResult.Status != CaptureStatus::Success)
+			if (updateScreenTexture)
 			{
-				return {};
+				capResult = UpdateScreenTexture();
+				if (capResult.Status != CaptureStatus::Success)
+				{
+					return {};
+				}
 			}
 
 			//Convert to cpu read texture
-			capResult = Texture2DConvertToCpuRead(vDirectXInstance.PixelShaderMultiPass ? vDirectXInstance.iD3D11Texture2D0RenderTargetViewPass2 : vDirectXInstance.iD3D11Texture2D0RenderTargetViewPass1);
+			capResult = Texture2DConvertToCpuRead(vDirectXInstance.iD3D11Texture2D0RenderTargetViewPassOut);
 			if (capResult.Status != CaptureStatus::Success)
 			{
 				return {};

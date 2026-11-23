@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "pch.h"
 #include "CaptureVariables.h"
 #include "CaptureInitialize.cpp"
 #include "CaptureImage.cpp"
@@ -74,7 +75,7 @@ namespace
 
 				//Update screen bytes cache
 				vCaptureInstance.vCaptureDataScreenCache.Cached = true;
-				vCaptureInstance.vCaptureDataScreenCache.ScreenBytes = GetScreenBytes(false);
+				vCaptureInstance.vCaptureDataScreenCache.ScreenBytes = GetScreenBytes(true, false);
 
 				//Return screen bytes
 				return vCaptureInstance.vCaptureDataScreenCache.ScreenBytes.data();
