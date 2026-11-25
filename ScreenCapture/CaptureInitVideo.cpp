@@ -90,6 +90,9 @@ namespace
 				else
 				{
 					imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PROFILE, eAVEncH265VProfile_Main_420_8);
+					imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PRIMARIES, MFVideoPrimaries_BT709);
+					imfMediaTypeVideoOut->SetUINT32(MF_MT_YUV_MATRIX, MFVideoTransferMatrix_BT709);
+					imfMediaTypeVideoOut->SetUINT32(MF_MT_TRANSFER_FUNCTION, MFVideoTransFunc_709);
 				}
 			}
 			else if (targetVideoFormat == MFVideoFormat_AV1)
@@ -106,12 +109,18 @@ namespace
 				else
 				{
 					imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PROFILE, eAVEncAV1VProfile_Main_420_8);
+					imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PRIMARIES, MFVideoPrimaries_BT709);
+					imfMediaTypeVideoOut->SetUINT32(MF_MT_YUV_MATRIX, MFVideoTransferMatrix_BT709);
+					imfMediaTypeVideoOut->SetUINT32(MF_MT_TRANSFER_FUNCTION, MFVideoTransFunc_709);
 				}
 			}
 			else if (targetVideoFormat == MFVideoFormat_H264)
 			{
 				imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_LEVEL, eAVEncH264VLevel6_2);
 				imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PROFILE, eAVEncH264VProfile_Main);
+				imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PRIMARIES, MFVideoPrimaries_BT709);
+				imfMediaTypeVideoOut->SetUINT32(MF_MT_YUV_MATRIX, MFVideoTransferMatrix_BT709);
+				imfMediaTypeVideoOut->SetUINT32(MF_MT_TRANSFER_FUNCTION, MFVideoTransFunc_709);
 			}
 
 			//Add video stream
@@ -165,15 +174,15 @@ namespace
 			MFSetAttributeSize(imfMediaTypeVideoIn, MF_MT_FRAME_SIZE, vCaptureDetails.MediaWidth, vCaptureDetails.MediaHeight);
 			MFSetAttributeRatio(imfMediaTypeVideoIn, MF_MT_FRAME_RATE, targetVideoFrameRate, 1);
 			MFSetAttributeRatio(imfMediaTypeVideoIn, MF_MT_PIXEL_ASPECT_RATIO, 1, 1);
-			if (vCaptureDetails.MediaTextureFormat == DXGI_FORMAT_P010)
+			if (vDirectXInstance.TextureFormatOutput == DXGI_FORMAT_NV12)
+			{
+				AVDebugWriteLine("Set media type format to NV12 (SDR)");
+				imfMediaTypeVideoIn->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_NV12);
+			}
+			else if (vDirectXInstance.TextureFormatOutput == DXGI_FORMAT_P010)
 			{
 				AVDebugWriteLine("Set media type format to P010 (HDR)");
 				imfMediaTypeVideoIn->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_P010);
-			}
-			else
-			{
-				AVDebugWriteLine("Set media type format to ARGB32 / NV12 (SDR)");
-				imfMediaTypeVideoIn->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_ARGB32);
 			}
 			hResult = vMediaFoundationInstance.imfSinkWriter->SetInputMediaType(vMediaFoundationInstance.vOutVideoStreamIndex, imfMediaTypeVideoIn, imfAttributesEncoding);
 			if (FAILED(hResult))
