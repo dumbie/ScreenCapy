@@ -78,7 +78,7 @@ namespace
 		BOOL DrawBorder = false;
 		BOOL DrawMouseCursor = true;
 		BOOL HDRtoSDR = false;
-		FLOAT HDRPaperWhite = 80.0F;
+		FLOAT HDRPaperWhite = 90.0F;
 		FLOAT HDRBrightness = 2.0F;
 		FLOAT Saturation = 1.0F;
 		FLOAT RedChannel = 1.0F;
@@ -103,7 +103,6 @@ namespace
 		UINT MediaRowByteSize;
 		UINT MediaPixelByteSize;
 		UINT MediaTotalByteSize;
-		UINT MediaTextureFormat;
 		BOOL HDREnabled;
 		BOOL HDRtoSDR;
 		FLOAT SDRWhiteLevel;
@@ -168,38 +167,41 @@ namespace
 		CComPtr<ID3D11DeviceContext4> iD3D11DeviceContext4;
 
 		//States
-		CComPtr<ID3D11SamplerState> iD3D11SamplerState0;
+		CComPtr<ID3D11SamplerState> iD3D11SamplerStatePoint;
+		CComPtr<ID3D11SamplerState> iD3D11SamplerStateLinear;
 
 		//Views
-		D3D11_VIEWPORT iD3D11ViewPortPass1;
-		D3D11_VIEWPORT iD3D11ViewPortPass2;
-		D3D11_VIEWPORT iD3D11ViewPortPassOut;
+		D3D11_VIEWPORT iD3D11ViewPortFull;
+		D3D11_VIEWPORT iD3D11ViewPortHalf;
 		CComPtr<ID3D11InputLayout> iD3D11InputLayout0;
-		CComPtr<ID3D11RenderTargetView> iD3D11RenderTargetView0Pass1;
-		CComPtr<ID3D11RenderTargetView> iD3D11RenderTargetView0Pass2;
-		CComPtr<ID3D11RenderTargetView> iD3D11RenderTargetView0PassOut;
-		CComPtr<ID3D11ShaderResourceView> iD3D11ShaderResourceView0Pass1;
-		CComPtr<ID3D11ShaderResourceView> iD3D11ShaderResourceView0Pass2;
-		CComPtr<ID3D11ShaderResourceView> iD3D11ShaderResourceView0PassOut;
+		CComPtr<ID3D11RenderTargetView> iD3D11RenderTargetView0PassCapture1;
+		CComPtr<ID3D11RenderTargetView> iD3D11RenderTargetView0PassCapture2;
+		CComPtr<ID3D11RenderTargetView> iD3D11RenderTargetView0PassOutput1;
+		CComPtr<ID3D11RenderTargetView> iD3D11RenderTargetView0PassOutput2;
+		CComPtr<ID3D11ShaderResourceView> iD3D11ShaderResourceView0PassCapture1;
+		CComPtr<ID3D11ShaderResourceView> iD3D11ShaderResourceView0PassCapture2;
+		CComPtr<ID3D11ShaderResourceView> iD3D11ShaderResourceView0PassOutput1;
 
 		//Shaders
 		CComPtr<ID3D11Buffer> iD3D11BufferVertex0;
 		CComPtr<ID3D11Buffer> iD3D11BufferPixel0;
 		CComPtr<ID3DBlob> iD3DBlobShaderVertex0;
-		CComPtr<ID3DBlob> iD3DBlobShaderPixel0Pass1;
-		CComPtr<ID3DBlob> iD3DBlobShaderPixel0Pass2;
-		CComPtr<ID3DBlob> iD3DBlobShaderPixel0PassOut;
+		CComPtr<ID3DBlob> iD3DBlobShaderPixel0PassCapture1;
+		CComPtr<ID3DBlob> iD3DBlobShaderPixel0PassCapture2;
+		CComPtr<ID3DBlob> iD3DBlobShaderPixel0PassOutput1;
+		CComPtr<ID3DBlob> iD3DBlobShaderPixel0PassOutput2;
+		CComPtr<ID3D11PixelShader> iD3D11ShaderPixel0PassCapture1;
+		CComPtr<ID3D11PixelShader> iD3D11ShaderPixel0PassCapture2;
+		CComPtr<ID3D11PixelShader> iD3D11ShaderPixel0PassOutput1;
+		CComPtr<ID3D11PixelShader> iD3D11ShaderPixel0PassOutput2;
 		CComPtr<ID3D11VertexShader> iD3D11ShaderVertex0;
-		CComPtr<ID3D11PixelShader> iD3D11ShaderPixel0Pass1;
-		CComPtr<ID3D11PixelShader> iD3D11ShaderPixel0Pass2;
-		CComPtr<ID3D11PixelShader> iD3D11ShaderPixel0PassOut;
 
 		//Textures
 		CComPtr<ID3D11Texture2D> iD3D11Texture2D0CpuRead;
 		CComPtr<ID3D11Texture2D> iD3D11Texture2D0ScreenCapture;
-		CComPtr<ID3D11Texture2D> iD3D11Texture2D0RenderTargetViewPass1;
-		CComPtr<ID3D11Texture2D> iD3D11Texture2D0RenderTargetViewPass2;
-		CComPtr<ID3D11Texture2D> iD3D11Texture2D0RenderTargetViewPassOut;
+		CComPtr<ID3D11Texture2D> iD3D11Texture2D0RenderTargetViewPassCapture1;
+		CComPtr<ID3D11Texture2D> iD3D11Texture2D0RenderTargetViewPassCapture2;
+		CComPtr<ID3D11Texture2D> iD3D11Texture2D0RenderTargetViewPassOutput1;
 	};
 
 	struct BitmapImageInstance

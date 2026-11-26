@@ -197,10 +197,8 @@ namespace
 			//Textures
 			vDirectXInstance.iD3D11Texture2D0CpuRead.Release();
 			vDirectXInstance.iD3D11Texture2D0ScreenCapture.Release();
-
-			//Views
-			vDirectXInstance.iD3D11ShaderResourceView0Pass1.Release();
-			vDirectXInstance.iD3D11ShaderResourceView0Pass2.Release();
+			vDirectXInstance.iD3D11Texture2D0RenderTargetViewPassCapture1.Release();
+			vDirectXInstance.iD3D11Texture2D0RenderTargetViewPassCapture2.Release();
 
 			//AVDebugWriteLine("Reset loop DirectX variables.");
 
@@ -228,30 +226,39 @@ namespace
 			vDirectXInstance.iD3D11DeviceContext4.Release();
 
 			//States
-			vDirectXInstance.iD3D11SamplerState0.Release();
+			vDirectXInstance.iD3D11SamplerStatePoint.Release();
+			vDirectXInstance.iD3D11SamplerStateLinear.Release();
 
 			//Views
 			vDirectXInstance.iD3D11InputLayout0.Release();
-			vDirectXInstance.iD3D11RenderTargetView0Pass1.Release();
-			vDirectXInstance.iD3D11RenderTargetView0Pass2.Release();
-			vDirectXInstance.iD3D11ShaderResourceView0Pass1.Release();
-			vDirectXInstance.iD3D11ShaderResourceView0Pass2.Release();
+			vDirectXInstance.iD3D11RenderTargetView0PassCapture1.Release();
+			vDirectXInstance.iD3D11RenderTargetView0PassCapture2.Release();
+			vDirectXInstance.iD3D11RenderTargetView0PassOutput1.Release();
+			vDirectXInstance.iD3D11RenderTargetView0PassOutput2.Release();
+			vDirectXInstance.iD3D11ShaderResourceView0PassCapture1.Release();
+			vDirectXInstance.iD3D11ShaderResourceView0PassCapture2.Release();
+			vDirectXInstance.iD3D11ShaderResourceView0PassOutput1.Release();
 
 			//Shaders
 			vDirectXInstance.iD3D11BufferVertex0.Release();
 			vDirectXInstance.iD3D11BufferPixel0.Release();
 			vDirectXInstance.iD3DBlobShaderVertex0.Release();
-			vDirectXInstance.iD3DBlobShaderPixel0Pass1.Release();
-			vDirectXInstance.iD3DBlobShaderPixel0Pass2.Release();
+			vDirectXInstance.iD3DBlobShaderPixel0PassCapture1.Release();
+			vDirectXInstance.iD3DBlobShaderPixel0PassCapture2.Release();
+			vDirectXInstance.iD3DBlobShaderPixel0PassOutput1.Release();
+			vDirectXInstance.iD3DBlobShaderPixel0PassOutput2.Release();
+			vDirectXInstance.iD3D11ShaderPixel0PassCapture1.Release();
+			vDirectXInstance.iD3D11ShaderPixel0PassCapture2.Release();
+			vDirectXInstance.iD3D11ShaderPixel0PassOutput1.Release();
+			vDirectXInstance.iD3D11ShaderPixel0PassOutput2.Release();
 			vDirectXInstance.iD3D11ShaderVertex0.Release();
-			vDirectXInstance.iD3D11ShaderPixel0Pass1.Release();
-			vDirectXInstance.iD3D11ShaderPixel0Pass2.Release();
 
 			//Textures
 			vDirectXInstance.iD3D11Texture2D0CpuRead.Release();
 			vDirectXInstance.iD3D11Texture2D0ScreenCapture.Release();
-			vDirectXInstance.iD3D11Texture2D0RenderTargetViewPass1.Release();
-			vDirectXInstance.iD3D11Texture2D0RenderTargetViewPass2.Release();
+			vDirectXInstance.iD3D11Texture2D0RenderTargetViewPassCapture1.Release();
+			vDirectXInstance.iD3D11Texture2D0RenderTargetViewPassCapture2.Release();
+			vDirectXInstance.iD3D11Texture2D0RenderTargetViewPassOutput1.Release();
 
 			AVDebugWriteLine("Reset all DirectX variables.");
 

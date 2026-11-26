@@ -24,14 +24,14 @@ namespace
 			vDirectXInstance.TextureResizing = vCaptureSettings.MaxPixelDimension != 0 && vCaptureDetails.OriginalWidth > vCaptureSettings.MaxPixelDimension && vCaptureDetails.OriginalHeight > vCaptureSettings.MaxPixelDimension;
 			if (vDirectXInstance.TextureResizing)
 			{
-				FLOAT resizedWidth = 0.01F;
-				FLOAT resizedHeight = 0.01F;
+				DOUBLE resizedWidth = 0.01;
+				DOUBLE resizedHeight = 0.01;
 				UINT minDimension = min(vCaptureDetails.OriginalWidth, vCaptureDetails.OriginalHeight);
 				UINT maxDimension = vCaptureSettings.MaxPixelDimension;
 				//Find nearest full pixel dimensions to keep original ratio
 				while (resizedWidth != (UINT)resizedWidth || resizedHeight != (UINT)resizedHeight)
 				{
-					FLOAT differenceRatio = (FLOAT)minDimension / maxDimension;
+					DOUBLE differenceRatio = (DOUBLE)minDimension / maxDimension;
 					resizedWidth = vCaptureDetails.OriginalWidth / differenceRatio;
 					resizedHeight = vCaptureDetails.OriginalHeight / differenceRatio;
 					maxDimension++;
@@ -73,7 +73,6 @@ namespace
 						//Details
 						vCaptureDetails.HDRtoSDR = true;
 						vCaptureDetails.SDRWhiteLevel = GetMonitorSDRWhiteLevel(vDirectXInstance.iDxgiOutputDescription1.Monitor);
-						vCaptureDetails.MediaTextureFormat = DXGI_FORMAT_UNKNOWN;
 
 						//Bytes
 						vCaptureDetails.MediaPixelByteSize = 4;
@@ -91,12 +90,11 @@ namespace
 						//Output
 						vDirectXInstance.TextureWidthOutput = vCaptureDetails.MediaWidth;
 						vDirectXInstance.TextureHeightOutput = vCaptureDetails.MediaHeight;
-						vDirectXInstance.TextureFormatOutput = DXGI_FORMAT_B8G8R8A8_UNORM;
+						vDirectXInstance.TextureFormatOutput = DXGI_FORMAT_NV12;
 
 						//Details
 						vCaptureDetails.HDRtoSDR = true;
 						vCaptureDetails.SDRWhiteLevel = GetMonitorSDRWhiteLevel(vDirectXInstance.iDxgiOutputDescription1.Monitor);
-						vCaptureDetails.MediaTextureFormat = DXGI_FORMAT_NV12;
 
 						//Bytes
 						vCaptureDetails.MediaPixelByteSize = 4;
@@ -122,9 +120,6 @@ namespace
 						vDirectXInstance.TextureHeightOutput = vCaptureDetails.MediaHeight;
 						vDirectXInstance.TextureFormatOutput = DXGI_FORMAT_R16G16B16A16_FLOAT;
 
-						//Details
-						vCaptureDetails.MediaTextureFormat = DXGI_FORMAT_UNKNOWN;
-
 						//Bytes
 						vCaptureDetails.MediaPixelByteSize = 8;
 						vCaptureDetails.MediaRowCount = vDirectXInstance.TextureHeightOutput;
@@ -139,12 +134,9 @@ namespace
 						vDirectXInstance.TextureFormatCapture = DXGI_FORMAT_R16G16B16A16_FLOAT;
 
 						//Output
-						vDirectXInstance.TextureWidthOutput = vCaptureDetails.MediaWidth / 2;
-						vDirectXInstance.TextureHeightOutput = vCaptureDetails.MediaHeight + vCaptureDetails.MediaHeight / 2;
-						vDirectXInstance.TextureFormatOutput = DXGI_FORMAT_R16G16_UNORM;
-
-						//Details
-						vCaptureDetails.MediaTextureFormat = DXGI_FORMAT_P010;
+						vDirectXInstance.TextureWidthOutput = vCaptureDetails.MediaWidth;
+						vDirectXInstance.TextureHeightOutput = vCaptureDetails.MediaHeight;
+						vDirectXInstance.TextureFormatOutput = DXGI_FORMAT_P010;
 
 						//Bytes
 						vCaptureDetails.MediaPixelByteSize = 4;
@@ -171,9 +163,6 @@ namespace
 					vDirectXInstance.TextureHeightOutput = vCaptureDetails.MediaHeight;
 					vDirectXInstance.TextureFormatOutput = DXGI_FORMAT_B8G8R8A8_UNORM;
 
-					//Details
-					vCaptureDetails.MediaTextureFormat = DXGI_FORMAT_UNKNOWN;
-
 					//Bytes
 					vCaptureDetails.MediaPixelByteSize = 4;
 					vCaptureDetails.MediaRowCount = vDirectXInstance.TextureHeightOutput;
@@ -190,10 +179,7 @@ namespace
 					//Output
 					vDirectXInstance.TextureWidthOutput = vCaptureDetails.MediaWidth;
 					vDirectXInstance.TextureHeightOutput = vCaptureDetails.MediaHeight;
-					vDirectXInstance.TextureFormatOutput = DXGI_FORMAT_B8G8R8A8_UNORM;
-
-					//Details
-					vCaptureDetails.MediaTextureFormat = DXGI_FORMAT_NV12;
+					vDirectXInstance.TextureFormatOutput = DXGI_FORMAT_NV12;
 
 					//Bytes
 					vCaptureDetails.MediaPixelByteSize = 4;

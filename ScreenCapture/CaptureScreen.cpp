@@ -76,7 +76,7 @@ namespace
 			}
 
 			//Convert to cpu read texture
-			capResult = Texture2DConvertToCpuRead(vDirectXInstance.iD3D11Texture2D0RenderTargetViewPassOut);
+			capResult = Texture2DConvertToCpuRead(vDirectXInstance.iD3D11Texture2D0RenderTargetViewPassOutput1);
 			if (capResult.Status != CaptureStatus::Success)
 			{
 				return {};
