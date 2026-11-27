@@ -125,6 +125,8 @@ namespace
 
 			//Media foundation
 			vMediaFoundationInstance.imfSinkWriter.Release();
+			vMediaFoundationInstance.imfMediaSink.Release();
+			vMediaFoundationInstance.imfByteStream.Release();
 			vMediaFoundationInstance.imfDXGIDeviceManager.Release();
 
 			//Device audio

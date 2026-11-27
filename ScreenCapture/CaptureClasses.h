@@ -44,8 +44,8 @@ namespace
 
 	enum class AudioFormats
 	{
-		MP3 = 0,
-		AAC = 1,
+		AAC = 0,
+		MP3 = 1,
 		FLAC = 2
 	};
 
@@ -222,6 +222,8 @@ namespace
 	struct MediaFoundationInstance
 	{
 		//Media foundation
+		CComPtr<IMFByteStream> imfByteStream;
+		CComPtr<IMFMediaSink> imfMediaSink;
 		CComPtr<IMFSinkWriterEx> imfSinkWriter;
 		CComPtr<IMFDXGIDeviceManager> imfDXGIDeviceManager;
 		BOOL vMediaCapturing;

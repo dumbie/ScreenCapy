@@ -49,6 +49,21 @@ namespace
 				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed starting media foundation") };
 			}
 
+			//Create IMF byte stream
+			hResult = MFCreateFile(MF_ACCESSMODE_WRITE, MF_OPENMODE_DELETE_IF_EXIST, MF_FILEFLAGS_NONE, filePath, &vMediaFoundationInstance.imfByteStream);
+			if (FAILED(hResult))
+			{
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed creating media byte stream") };
+			}
+
+			//Create IMF media sink
+			//Note: Using Fragmented MP4 container prevents corruption when capture is stopped before finalizing.
+			hResult = MFCreateFMPEG4MediaSink(vMediaFoundationInstance.imfByteStream, NULL, NULL, &vMediaFoundationInstance.imfMediaSink);
+			if (FAILED(hResult))
+			{
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed creating media sink") };
+			}
+
 			//Create IMF attributes
 			CComPtr<IMFAttributes> imfAttributes;
 			hResult = MFCreateAttributes(&imfAttributes, 0);
@@ -65,25 +80,32 @@ namespace
 			imfAttributes->SetUINT32(MF_SINK_WRITER_DISABLE_THROTTLING, 1);
 			imfAttributes->SetUnknown(MF_SINK_WRITER_D3D_MANAGER, vMediaFoundationInstance.imfDXGIDeviceManager);
 			imfAttributes->SetUnknown(MF_SOURCE_READER_D3D_MANAGER, vMediaFoundationInstance.imfDXGIDeviceManager);
-			imfAttributes->SetGUID(MF_TRANSCODE_CONTAINERTYPE, MFTranscodeContainerType_MPEG4);
+			imfAttributes->SetGUID(MF_TRANSCODE_CONTAINERTYPE, MFTranscodeContainerType_FMPEG4);
 
 			//Create IMF sink writer
 			CComPtr<IMFSinkWriter> imfSinkWriter;
-			hResult = MFCreateSinkWriterFromURL(filePath, NULL, imfAttributes, &imfSinkWriter);
+			hResult = MFCreateSinkWriterFromMediaSink(vMediaFoundationInstance.imfMediaSink, imfAttributes, &imfSinkWriter);
 			if (FAILED(hResult))
 			{
-				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed creating sink writer") };
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed creating media sink writer") };
 			}
 
 			//Convert variables
 			hResult = imfSinkWriter->QueryInterface(&vMediaFoundationInstance.imfSinkWriter);
 			if (FAILED(hResult))
 			{
-				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed converting imfSinkWriter") };
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed converting media sink writer") };
 			}
 
-			//Set video media type
-			capResult = SetVideoMediaType();
+			//Set video output media type
+			capResult = SetVideoMediaTypeOutput();
+			if (capResult.Status != CaptureStatus::Success)
+			{
+				return capResult;
+			}
+
+			//Set video input media type
+			capResult = SetVideoMediaTypeInput();
 			if (capResult.Status != CaptureStatus::Success)
 			{
 				return capResult;
@@ -103,15 +125,15 @@ namespace
 				return capResult;
 			}
 
-			//Set audio out media type
-			capResult = SetAudioMediaTypeOut();
+			//Set audio output media type
+			capResult = SetAudioMediaTypeOutput();
 			if (capResult.Status != CaptureStatus::Success)
 			{
 				return capResult;
 			}
 
-			//Set audio in media type
-			capResult = SetAudioMediaTypeIn();
+			//Set audio input media type
+			capResult = SetAudioMediaTypeInput();
 			if (capResult.Status != CaptureStatus::Success)
 			{
 				return capResult;

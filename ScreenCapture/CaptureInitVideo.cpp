@@ -6,7 +6,7 @@
 
 namespace
 {
-	CaptureResult SetVideoMediaType()
+	CaptureResult SetVideoMediaTypeOutput()
 	{
 		try
 		{
@@ -56,83 +56,104 @@ namespace
 				AVDebugWriteLine("Set video output format to AV1.");
 			}
 
-			//Create video out media type
-			CComPtr<IMFMediaType> imfMediaTypeVideoOut;
-			hResult = MFCreateMediaType(&imfMediaTypeVideoOut);
-			if (FAILED(hResult))
-			{
-				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"MFCreateMediaType video out failed") };
-			}
-
 			//Check if video format is supported
 			if (!CodecCheckVideoEncoder(targetVideoFormat))
 			{
 				return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"Video format is not supported") };
 			}
 
-			//Set encoder settings
-			imfMediaTypeVideoOut->SetGUID(MF_MT_SUBTYPE, targetVideoFormat);
-			imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_NOMINAL_RANGE, targetVideoNominalRange);
-			MFSetAttributeRatio(imfMediaTypeVideoOut, MF_MT_FRAME_RATE, targetVideoFrameRate, 1);
+			//Create video media type
+			CComPtr<IMFMediaType> imfMediaTypeVideoOutput;
+			hResult = MFCreateMediaType(&imfMediaTypeVideoOutput);
+			if (FAILED(hResult))
+			{
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"MFCreateMediaType video output failed") };
+			}
+
+			//Set encoding settings
+			imfMediaTypeVideoOutput->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Video);
+			imfMediaTypeVideoOutput->SetGUID(MF_MT_SUBTYPE, targetVideoFormat);
+			imfMediaTypeVideoOutput->SetUINT32(MF_MT_ALL_SAMPLES_INDEPENDENT, 1);
+			imfMediaTypeVideoOutput->SetUINT32(MF_MT_INTERLACE_MODE, MFVideoInterlace_Progressive);
+			imfMediaTypeVideoOutput->SetUINT32(MF_MT_VIDEO_NOMINAL_RANGE, targetVideoNominalRange);
+			MFSetAttributeSize(imfMediaTypeVideoOutput, MF_MT_FRAME_SIZE, vCaptureDetails.MediaWidth, vCaptureDetails.MediaHeight);
+			MFSetAttributeRatio(imfMediaTypeVideoOutput, MF_MT_FRAME_RATE, targetVideoFrameRate, 1);
+			MFSetAttributeRatio(imfMediaTypeVideoOutput, MF_MT_PIXEL_ASPECT_RATIO, 1, 1);
 
 			//Check used video format
 			if (targetVideoFormat == MFVideoFormat_HEVC)
 			{
-				imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_LEVEL, eAVEncH265VLevel6_2);
+				imfMediaTypeVideoOutput->SetUINT32(MF_MT_VIDEO_LEVEL, eAVEncH265VLevel6_2);
 				//HDR and SDR settings
 				if (targetVideoHDR)
 				{
-					imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PROFILE, eAVEncH265VProfile_Main_420_10);
-					imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PRIMARIES, MFVideoPrimaries_BT2020);
-					imfMediaTypeVideoOut->SetUINT32(MF_MT_YUV_MATRIX, MFVideoTransferMatrix_BT2020_10);
-					imfMediaTypeVideoOut->SetUINT32(MF_MT_TRANSFER_FUNCTION, MFVideoTransFunc_2084);
+					imfMediaTypeVideoOutput->SetUINT32(MF_MT_VIDEO_PROFILE, eAVEncH265VProfile_Main_420_10);
+					imfMediaTypeVideoOutput->SetUINT32(MF_MT_VIDEO_PRIMARIES, MFVideoPrimaries_BT2020);
+					imfMediaTypeVideoOutput->SetUINT32(MF_MT_YUV_MATRIX, MFVideoTransferMatrix_BT2020_10);
+					imfMediaTypeVideoOutput->SetUINT32(MF_MT_TRANSFER_FUNCTION, MFVideoTransFunc_2084);
 				}
 				else
 				{
-					imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PROFILE, eAVEncH265VProfile_Main_420_8);
-					imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PRIMARIES, MFVideoPrimaries_BT709);
-					imfMediaTypeVideoOut->SetUINT32(MF_MT_YUV_MATRIX, MFVideoTransferMatrix_BT709);
-					imfMediaTypeVideoOut->SetUINT32(MF_MT_TRANSFER_FUNCTION, MFVideoTransFunc_709);
+					imfMediaTypeVideoOutput->SetUINT32(MF_MT_VIDEO_PROFILE, eAVEncH265VProfile_Main_420_8);
+					imfMediaTypeVideoOutput->SetUINT32(MF_MT_VIDEO_PRIMARIES, MFVideoPrimaries_BT709);
+					imfMediaTypeVideoOutput->SetUINT32(MF_MT_YUV_MATRIX, MFVideoTransferMatrix_BT709);
+					imfMediaTypeVideoOutput->SetUINT32(MF_MT_TRANSFER_FUNCTION, MFVideoTransFunc_709);
 				}
 			}
 			else if (targetVideoFormat == MFVideoFormat_AV1)
 			{
-				imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_LEVEL, eAVEncAV1VLevel6);
+				imfMediaTypeVideoOutput->SetUINT32(MF_MT_VIDEO_LEVEL, eAVEncAV1VLevel6);
 				//HDR and SDR settings
 				if (targetVideoHDR)
 				{
-					imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PROFILE, eAVEncAV1VProfile_Main_420_10);
-					imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PRIMARIES, MFVideoPrimaries_BT2020);
-					imfMediaTypeVideoOut->SetUINT32(MF_MT_YUV_MATRIX, MFVideoTransferMatrix_BT2020_10);
-					imfMediaTypeVideoOut->SetUINT32(MF_MT_TRANSFER_FUNCTION, MFVideoTransFunc_2084);
+					imfMediaTypeVideoOutput->SetUINT32(MF_MT_VIDEO_PROFILE, eAVEncAV1VProfile_Main_420_10);
+					imfMediaTypeVideoOutput->SetUINT32(MF_MT_VIDEO_PRIMARIES, MFVideoPrimaries_BT2020);
+					imfMediaTypeVideoOutput->SetUINT32(MF_MT_YUV_MATRIX, MFVideoTransferMatrix_BT2020_10);
+					imfMediaTypeVideoOutput->SetUINT32(MF_MT_TRANSFER_FUNCTION, MFVideoTransFunc_2084);
 				}
 				else
 				{
-					imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PROFILE, eAVEncAV1VProfile_Main_420_8);
-					imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PRIMARIES, MFVideoPrimaries_BT709);
-					imfMediaTypeVideoOut->SetUINT32(MF_MT_YUV_MATRIX, MFVideoTransferMatrix_BT709);
-					imfMediaTypeVideoOut->SetUINT32(MF_MT_TRANSFER_FUNCTION, MFVideoTransFunc_709);
+					imfMediaTypeVideoOutput->SetUINT32(MF_MT_VIDEO_PROFILE, eAVEncAV1VProfile_Main_420_8);
+					imfMediaTypeVideoOutput->SetUINT32(MF_MT_VIDEO_PRIMARIES, MFVideoPrimaries_BT709);
+					imfMediaTypeVideoOutput->SetUINT32(MF_MT_YUV_MATRIX, MFVideoTransferMatrix_BT709);
+					imfMediaTypeVideoOutput->SetUINT32(MF_MT_TRANSFER_FUNCTION, MFVideoTransFunc_709);
 				}
 			}
 			else if (targetVideoFormat == MFVideoFormat_H264)
 			{
-				imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_LEVEL, eAVEncH264VLevel6_2);
-				imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PROFILE, eAVEncH264VProfile_Main);
-				imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PRIMARIES, MFVideoPrimaries_BT709);
-				imfMediaTypeVideoOut->SetUINT32(MF_MT_YUV_MATRIX, MFVideoTransferMatrix_BT709);
-				imfMediaTypeVideoOut->SetUINT32(MF_MT_TRANSFER_FUNCTION, MFVideoTransFunc_709);
+				imfMediaTypeVideoOutput->SetUINT32(MF_MT_VIDEO_LEVEL, eAVEncH264VLevel6_2);
+				imfMediaTypeVideoOutput->SetUINT32(MF_MT_VIDEO_PROFILE, eAVEncH264VProfile_Main);
+				imfMediaTypeVideoOutput->SetUINT32(MF_MT_VIDEO_PRIMARIES, MFVideoPrimaries_BT709);
+				imfMediaTypeVideoOutput->SetUINT32(MF_MT_YUV_MATRIX, MFVideoTransferMatrix_BT709);
+				imfMediaTypeVideoOutput->SetUINT32(MF_MT_TRANSFER_FUNCTION, MFVideoTransFunc_709);
 			}
 
-			//Add video stream
-			imfMediaTypeVideoOut->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Video);
-			imfMediaTypeVideoOut->SetUINT32(MF_MT_ALL_SAMPLES_INDEPENDENT, 1);
-			imfMediaTypeVideoOut->SetUINT32(MF_MT_INTERLACE_MODE, MFVideoInterlace_Progressive);
-			MFSetAttributeSize(imfMediaTypeVideoOut, MF_MT_FRAME_SIZE, vCaptureDetails.MediaWidth, vCaptureDetails.MediaHeight);
-			MFSetAttributeRatio(imfMediaTypeVideoOut, MF_MT_PIXEL_ASPECT_RATIO, 1, 1);
-			hResult = vMediaFoundationInstance.imfSinkWriter->AddStream(imfMediaTypeVideoOut, &vMediaFoundationInstance.vOutVideoStreamIndex);
+			//Add media stream
+			hResult = vMediaFoundationInstance.imfSinkWriter->AddStream(imfMediaTypeVideoOutput, &vMediaFoundationInstance.vOutVideoStreamIndex);
 			if (FAILED(hResult))
 			{
-				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"AddStream video out failed") };
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"AddStream video output failed") };
+			}
+
+			//Return result
+			return { .Status = CaptureStatus::Success };
+		}
+		catch (...)
+		{
+			//Return result
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"SetVideoMediaTypeOutput failed") };
+		}
+	}
+
+	CaptureResult SetVideoMediaTypeInput()
+	{
+		try
+		{
+			//Check monitor refresh rate
+			UINT targetVideoFrameRate = vMediaSettings.VideoFrameRate;
+			if (targetVideoFrameRate > vCaptureDetails.OriginalRefreshRate)
+			{
+				targetVideoFrameRate = vCaptureDetails.OriginalRefreshRate;
 			}
 
 			//Create video encoding parameters
@@ -161,33 +182,36 @@ namespace
 			imfAttributesEncoding->SetUINT32(CODECAPI_AVEncMPVGOPSize, targetVideoFrameRate * 2);
 			imfAttributesEncoding->SetUINT32(CODECAPI_AVEncMPVDefaultBPictureCount, 0);
 
-			//Create video in media type
-			CComPtr<IMFMediaType> imfMediaTypeVideoIn;
-			hResult = MFCreateMediaType(&imfMediaTypeVideoIn);
+			//Create video media type
+			CComPtr<IMFMediaType> imfMediaTypeVideoInput;
+			hResult = MFCreateMediaType(&imfMediaTypeVideoInput);
 			if (FAILED(hResult))
 			{
-				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"MFCreateMediaType video in failed") };
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"MFCreateMediaType video input failed") };
 			}
 
-			imfMediaTypeVideoIn->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Video);
-			imfMediaTypeVideoIn->SetUINT32(MF_MT_ALL_SAMPLES_INDEPENDENT, 1);
-			MFSetAttributeSize(imfMediaTypeVideoIn, MF_MT_FRAME_SIZE, vCaptureDetails.MediaWidth, vCaptureDetails.MediaHeight);
-			MFSetAttributeRatio(imfMediaTypeVideoIn, MF_MT_FRAME_RATE, targetVideoFrameRate, 1);
-			MFSetAttributeRatio(imfMediaTypeVideoIn, MF_MT_PIXEL_ASPECT_RATIO, 1, 1);
+			//Set encoding settings
+			imfMediaTypeVideoInput->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Video);
+			imfMediaTypeVideoInput->SetUINT32(MF_MT_ALL_SAMPLES_INDEPENDENT, 1);
+			MFSetAttributeSize(imfMediaTypeVideoInput, MF_MT_FRAME_SIZE, vCaptureDetails.MediaWidth, vCaptureDetails.MediaHeight);
+			MFSetAttributeRatio(imfMediaTypeVideoInput, MF_MT_FRAME_RATE, targetVideoFrameRate, 1);
+			MFSetAttributeRatio(imfMediaTypeVideoInput, MF_MT_PIXEL_ASPECT_RATIO, 1, 1);
 			if (vDirectXInstance.TextureFormatOutput == DXGI_FORMAT_NV12)
 			{
 				AVDebugWriteLine("Set media type format to NV12 (SDR)");
-				imfMediaTypeVideoIn->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_NV12);
+				imfMediaTypeVideoInput->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_NV12);
 			}
 			else if (vDirectXInstance.TextureFormatOutput == DXGI_FORMAT_P010)
 			{
 				AVDebugWriteLine("Set media type format to P010 (HDR)");
-				imfMediaTypeVideoIn->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_P010);
+				imfMediaTypeVideoInput->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_P010);
 			}
-			hResult = vMediaFoundationInstance.imfSinkWriter->SetInputMediaType(vMediaFoundationInstance.vOutVideoStreamIndex, imfMediaTypeVideoIn, imfAttributesEncoding);
+
+			//Set video media type
+			hResult = vMediaFoundationInstance.imfSinkWriter->SetInputMediaType(vMediaFoundationInstance.vOutVideoStreamIndex, imfMediaTypeVideoInput, imfAttributesEncoding);
 			if (FAILED(hResult))
 			{
-				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"SetInputMediaType video in failed") };
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"SetInputMediaType video input failed") };
 			}
 
 			//Return result
@@ -196,7 +220,7 @@ namespace
 		catch (...)
 		{
 			//Return result
-			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"SetVideoMediaType failed") };
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"SetVideoMediaTypeInput failed") };
 		}
 	}
 }

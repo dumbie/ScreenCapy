@@ -147,48 +147,49 @@ namespace
 		}
 	}
 
-	CaptureResult SetAudioMediaTypeOut()
+	CaptureResult SetAudioMediaTypeOutput()
 	{
 		try
 		{
-			//Create audio out media type
-			CComPtr<IMFMediaType> imfMediaTypeAudioOut;
-			hResult = MFCreateMediaType(&imfMediaTypeAudioOut);
+			//Create audio media type
+			CComPtr<IMFMediaType> imfMediaTypeAudioOutput;
+			hResult = MFCreateMediaType(&imfMediaTypeAudioOutput);
 			if (FAILED(hResult))
 			{
-				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"MFCreateMediaType audio out failed") };
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"MFCreateMediaType audio output failed") };
+			}
+
+			//Set encoding settings
+			imfMediaTypeAudioOutput->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
+			imfMediaTypeAudioOutput->SetUINT32(MF_MT_AUDIO_NUM_CHANNELS, vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.nChannels);
+			imfMediaTypeAudioOutput->SetUINT32(MF_MT_AUDIO_AVG_BYTES_PER_SECOND, vMediaSettings.AudioBitRate * 1000 / 8);
+			imfMediaTypeAudioOutput->SetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.nSamplesPerSec);
+
+			//AAC
+			if (vMediaSettings.AudioFormat == AudioFormats::AAC)
+			{
+				imfMediaTypeAudioOutput->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_AAC);
+				imfMediaTypeAudioOutput->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.wBitsPerSample);
 			}
 
 			//MP3
 			if (vMediaSettings.AudioFormat == AudioFormats::MP3)
 			{
-				imfMediaTypeAudioOut->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_MP3);
-			}
-
-			//AAC
-			if (vMediaSettings.AudioFormat == AudioFormats::AAC)
-			{
-				imfMediaTypeAudioOut->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_AAC);
-				imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.wBitsPerSample);
+				imfMediaTypeAudioOutput->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_MP3);
 			}
 
 			//FLAC
 			if (vMediaSettings.AudioFormat == AudioFormats::FLAC)
 			{
-				imfMediaTypeAudioOut->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_FLAC);
-				imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.wBitsPerSample);
+				imfMediaTypeAudioOutput->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_FLAC);
+				imfMediaTypeAudioOutput->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.wBitsPerSample);
 			}
 
-			//Add audio stream
-			imfMediaTypeAudioOut->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
-			imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_NUM_CHANNELS, vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.nChannels);
-			imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.nSamplesPerSec);
-			imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_BLOCK_ALIGNMENT, vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.nBlockAlign);
-			imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_AVG_BYTES_PER_SECOND, vMediaSettings.AudioBitRate * 1000 / 8);
-			hResult = vMediaFoundationInstance.imfSinkWriter->AddStream(imfMediaTypeAudioOut, &vMediaFoundationInstance.vOutAudioStreamIndex);
+			//Add media stream
+			hResult = vMediaFoundationInstance.imfSinkWriter->AddStream(imfMediaTypeAudioOutput, &vMediaFoundationInstance.vOutAudioStreamIndex);
 			if (FAILED(hResult))
 			{
-				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"AddStream audio out failed") };
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"AddStream audio output failed") };
 			}
 
 			//Return result
@@ -197,32 +198,33 @@ namespace
 		catch (...)
 		{
 			//Return result
-			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"SetAudioMediaTypeOut failed") };
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"SetAudioMediaTypeOutput failed") };
 		}
 	}
 
-	CaptureResult SetAudioMediaTypeIn()
+	CaptureResult SetAudioMediaTypeInput()
 	{
 		try
 		{
-			//Create audio in media type
-			CComPtr<IMFMediaType> imfMediaTypeAudioIn;
-			hResult = MFCreateMediaType(&imfMediaTypeAudioIn);
+			//Create audio media type
+			CComPtr<IMFMediaType> imfMediaTypeAudioInput;
+			hResult = MFCreateMediaType(&imfMediaTypeAudioInput);
 			if (FAILED(hResult))
 			{
-				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"MFCreateMediaType audio in failed") };
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"MFCreateMediaType audio input failed") };
 			}
 
-			hResult = MFInitMediaTypeFromWaveFormatEx(imfMediaTypeAudioIn, &vMediaFoundationInstance.iAudioWaveFormatExCapture.Format, sizeof(vMediaFoundationInstance.iAudioWaveFormatExCapture));
+			hResult = MFInitMediaTypeFromWaveFormatEx(imfMediaTypeAudioInput, &vMediaFoundationInstance.iAudioWaveFormatExCapture.Format, sizeof(vMediaFoundationInstance.iAudioWaveFormatExCapture));
 			if (FAILED(hResult))
 			{
-				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"MFInitMediaTypeFromWaveFormatEx audio in failed") };
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"MFInitMediaTypeFromWaveFormatEx audio input failed") };
 			}
 
-			hResult = vMediaFoundationInstance.imfSinkWriter->SetInputMediaType(vMediaFoundationInstance.vOutAudioStreamIndex, imfMediaTypeAudioIn, NULL);
+			//Set audio media type
+			hResult = vMediaFoundationInstance.imfSinkWriter->SetInputMediaType(vMediaFoundationInstance.vOutAudioStreamIndex, imfMediaTypeAudioInput, NULL);
 			if (FAILED(hResult))
 			{
-				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"SetInputMediaType audio in failed") };
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"SetInputMediaType audio input failed") };
 			}
 
 			//Return result
@@ -231,7 +233,7 @@ namespace
 		catch (...)
 		{
 			//Return result
-			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"SetAudioMediaTypeIn failed") };
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"SetAudioMediaTypeInput failed") };
 		}
 	}
 }
